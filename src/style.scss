@@ -1,0 +1,57 @@
+
+.ace_editor {
+  width: 100% !important;
+}
+
+body {
+  background: #f1f1f1;
+  padding: 50px 0px;
+}
+
+.container {
+  padding: 20px 0px;
+  background: #ffffff;
+
+  .block {
+    margin-left: 1.5em;
+    margin-right: 0.2em;
+    min-height: 4em;
+
+    .sidebar {
+      position: absolute;
+      left: -0.75em;
+      text-align: center;
+      padding-right: 5px;
+      border-right: 2px solid #cccccc;
+
+      .run {
+        cursor: pointer;
+        color: green;
+      }
+
+      .add {
+        cursor: pointer;
+        color: #cccccc;
+      }
+
+      .status-failed {
+        color: red;
+      }
+
+      .status-runned {
+        color: green;
+      }
+
+      .status-idle {
+        color: #cccccc;
+      }
+    }
+
+    .error {
+      font-family: monospace;
+      font-size: 12px;
+      background-color: #e8b5b5;
+      padding: 0px 0.3em;
+    }
+  }
+}
