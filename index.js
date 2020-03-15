@@ -8,7 +8,7 @@ const options = {
   outDir: './build',
   outFile: 'index.html', // The name of the outputFile
   publicUrl: '.',
-  watch: false,
+  watch: true,
   cache: true,
   cacheDir: 'cache',
   contentHash: false,
