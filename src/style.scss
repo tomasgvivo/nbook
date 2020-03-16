@@ -55,11 +55,11 @@ body {
         color: red;
       }
 
-      .status-runned {
+      .status-runned, .status-cached {
         color: green;
       }
 
-      .status-idle {
+      .status-idle, .status-skipped {
         color: #cccccc;
       }
     }
@@ -127,5 +127,20 @@ body {
     .result {
       margin-top: 20px;
     }
+  }
+}
+
+.progressbar {
+  &.book-state-idle {
+    transition: height 0s linear 1s;
+    height: 0;
+    .MuiLinearProgress-bar {
+      transition: transform 0s linear 1.01s;
+      transform: translateX(-100%) !important;
+    }
+  }
+
+  &.book-state-running {
+    height: 3px;
   }
 }

@@ -3,20 +3,28 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-dracula";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTimes, faCircle, faPlay, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle } from '@fortawesome/free-solid-svg-icons'
 import resolveView from '../../viewers/resolver';
 
 export default ({ book, block, index }) => {
   let status = null;
-  if(block.hasRun) {
-    status = block.error ? 'failed' : 'runned';
+  if(block.error) {
+    status = 'failed';
+  } else if(block.stratergy) {
+    status = ({
+      cache: 'cached',
+      run: 'runned',
+      skip: 'skipped'
+    })[block.stratergy];
   } else {
     status = 'idle';
   }
 
   const statusIcon = {
     runned: faCheck,
+    cached: faRecycle,
     failed: faTimes,
+    skipped: faCircle,
     idle: faCircle
   }
 

@@ -8,7 +8,7 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
-    this.book = new Book;
+    this.book = Book.load('./books/test');
     this.state = {
       stats: { current: {}, evolutive: [] }
     }
@@ -16,7 +16,6 @@ export default class App extends Component {
       this.forceUpdate();
     });
     this.book.on('stats', stats => {
-      console.log(stats, stats.evolutive.map(stat => stat.memory));
       this.setState({
         stats: stats
       });
@@ -26,7 +25,7 @@ export default class App extends Component {
   render() {
     return (
       <>
-        <AppBar stats={this.state.stats} />
+        <AppBar book={this.book} />
         <Container>
           <BookComponent book={this.book} />
         </Container>

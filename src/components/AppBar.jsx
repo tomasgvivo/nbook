@@ -1,13 +1,12 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Menu, MenuItem, ListItemText, Button, Divider, IconButton, Grid } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Menu, MenuItem, ListItemText, Button, Divider, IconButton, Grid, Tooltip, LinearProgress } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCode, faSquare } from '@fortawesome/free-solid-svg-icons'
+import { faCode, faSquare, faTrash, faSync } from '@fortawesome/free-solid-svg-icons'
 import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
-
-import { ResponsiveContainer, ComposedChart, Area, CartesianGrid, XAxis, YAxis } from 'recharts';
+import ResourceGraph from './ResourceGraph';
 const prettyBytes = require('pretty-bytes');
 
-const MenuButton = ({ name }) => {
+const MenuButton = ({ name, children }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const handleClick = event => {
         setAnchorEl(event.currentTarget);
@@ -35,7 +34,7 @@ const MenuButton = ({ name }) => {
                 getContentAnchorEl={null}
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'center',
+                    horizontal: 'left',
                 }}
                 transformOrigin={{
                     vertical: 'top',
@@ -47,73 +46,41 @@ const MenuButton = ({ name }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem>
-                    <ListItemText primary="Sent mail" />
-                </MenuItem>
-                <MenuItem>
-                    <ListItemText primary="Drafts" />
-                </MenuItem>
-                <MenuItem>
-                    <ListItemText primary="Inbox" />
-                </MenuItem>
+                { children }
             </Menu>
         </>
     );
 }
 
-export default ({ stats }) => {
+export default ({ book }) => {
     return (
         <AppBar color="inherit" elevation={4}>
             <Grid container direction="row" justify="center">
                 <Grid item xs={10}>
                     <Toolbar variant="dense">
                         <Typography variant="h6" noWrap>
-                            Untitled Book
+                            {book.name}
                         </Typography>
                     </Toolbar>
                     <Toolbar variant="dense">
-                        <MenuButton name="File"></MenuButton>
-                        <MenuButton name="Edit"></MenuButton>
+                        <MenuButton name="File">
+                            <MenuItem>
+                                <ListItemText primary="Open..." />
+                            </MenuItem>
+                            <MenuItem onClick={() => book.save()}>
+                                <ListItemText primary="Save"  />
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemText primary="Save as..." />
+                            </MenuItem>
+                        </MenuButton>
+                        <MenuButton name="Edit">
+
+                        </MenuButton>
                     </Toolbar>
                 </Grid>
                 <Grid item xs={2}>
-                    <ResponsiveContainer width="100%" height={96}>
-                        <ComposedChart data={stats.evolutive} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                            <defs>
-                                <linearGradient id="color-cpu" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
-                                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
-                                </linearGradient>
-                                <linearGradient id="color-memory" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                                </linearGradient>
-                            </defs>
-                            <Area
-                                type="monotone"
-                                dataKey="cpu"
-                                stroke="#82ca9d"
-                                yAxisId={0}
-                                isAnimationActive={false}
-                                animationEasing={'linear'}
-                                animationDuration={100}
-                                dot={false}
-                                fill="url(#color-cpu)"
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="memory"
-                                stroke="#8884d8"
-                                yAxisId={1}
-                                isAnimationActive={false}
-                                fill="url(#color-memory)"
-                            />
-                            <CartesianGrid strokeDasharray="3 3" horizontalPoints={[0, 20, 40, 60, 80]} />
-                            <XAxis dataKey="date" tick={false} hide={true} />
-                            <YAxis hide={true} yAxisId={0} domain={[0, 110]} />
-                            <YAxis hide={true} yAxisId={1} domain={[0, max => max * 1.1]}/>
-                        </ComposedChart>
-                    </ResponsiveContainer>
+                    <ResourceGraph stats={book.stats} width="100%" height={96} maxMemory={(1024 ** 2) * 512} />
                 </Grid>
                 <Grid item xs={10}>
                     <Divider />
@@ -124,12 +91,33 @@ export default ({ stats }) => {
                 </Grid>
                 <Grid item xs={2}>
                     <Divider />
-                    <Typography noWrap>
-                        <FontAwesomeIcon icon={faSquare} style={{ color: '#82ca9d' }} /> cpu: {(stats.current.cpu || 0).toFixed()}%
-                    </Typography>
-                    <Typography noWrap>
-                        <FontAwesomeIcon icon={faSquare} style={{ color: '#8884d8' }} /> memory: { prettyBytes(stats.current.memory || 0) }
-                    </Typography>
+                    <Toolbar variant="dense" disableGutters>
+                        <Tooltip title={`pid: ${book.runtime.pid}`}>
+                            <div>
+                                <Typography noWrap>
+                                    <FontAwesomeIcon icon={faSquare} style={{ color: '#82ca9d' }} /> cpu: {(book.stats.current.cpu || 0).toFixed()}%
+                                </Typography>
+                                <Typography noWrap>
+                                    <FontAwesomeIcon icon={faSquare} style={{ color: '#8884d8' }} /> memory: { prettyBytes(book.stats.current.memory || 0) }
+                                </Typography>
+                            </div>
+                        </Tooltip>
+                        <div style={{ flexGrow: 1 }} role="listitem" aria-labelledby="shopping cart items" />
+                            <Tooltip title="collect garbage">
+                                <IconButton size="small" onClick={() => book.forceRuntimeGC()}><FontAwesomeIcon icon={faTrash} /></IconButton>
+                            </Tooltip>
+                            <Tooltip title="re-create runtime">
+                                <IconButton size="small" onClick={() => book.recreateRuntime()}><FontAwesomeIcon icon={faSync} /></IconButton>
+                            </Tooltip>
+                        &nbsp;
+                    </Toolbar>
+                </Grid>
+                <Grid item xs={12}>
+                    <LinearProgress
+                        className={`progressbar book-state-${book.status}`}
+                        variant="determinate"
+                        value={ (book.blocks.filter(block => block.hasRun).length / book.blocks.length) * 100 }
+                    />
                 </Grid>
             </Grid>
         </AppBar>
