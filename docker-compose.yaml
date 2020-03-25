@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+    nbook:
+        build: .
+        volumes:
+            - ./workspace:/srv/workspace
+        tmpfs:
+            - /srv/build
+            - /srv/cache
+        ports:
+            - 8000:8000
+            - 8080:8080

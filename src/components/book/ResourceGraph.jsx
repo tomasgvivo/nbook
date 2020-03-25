@@ -3,7 +3,7 @@ import { ResponsiveContainer, ComposedChart, Area, CartesianGrid, XAxis, YAxis }
 
 module.exports = ({ stats, width, height, maxMemory = 0 }) => (
     <ResponsiveContainer width={width} height={height}>
-        <ComposedChart data={stats.evolutive} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+        <ComposedChart data={stats.histogram} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
             <defs>
                 <linearGradient id="color-cpu" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>

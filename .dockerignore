@@ -1,6 +1,4 @@
 node_modules
 build/*
 cache/*
-packages/*
-
 **/node_modules/*

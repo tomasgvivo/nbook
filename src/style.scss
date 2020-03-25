@@ -1,3 +1,6 @@
+@page {
+  size: A4;
+}
 
 .ace_editor {
   width: 100% !important;
@@ -5,18 +8,23 @@
 
 body {
   background: #f1f1f1;
-  padding-top: 145px;
+  padding-top: 50px;
+}
+
+.ace_editor {
+  border-radius: 5px;
 }
 
 .book {
-  margin: 50px;
+  margin-top: 150px;
+  margin-bottom: 50px;
   padding: 20px 0px;
   background: #ffffff;
-
+  
   .block {
     position: relative;
     padding-left: 3em;
-    padding-right: 1em;
+    padding-right: 3em;
     min-height: 5em;
     margin: 20px 0px;
 
@@ -62,10 +70,6 @@ body {
       .status-idle, .status-skipped {
         color: #cccccc;
       }
-    }
-
-    .ace_editor {
-      border-radius: 5px;
     }
 
     &.has-error {
@@ -125,6 +129,7 @@ body {
     }
 
     .result {
+      overflow-y: auto;
       margin-top: 20px;
     }
   }
@@ -142,5 +147,29 @@ body {
 
   &.book-state-running {
     height: 3px;
+  }
+}
+
+
+@media print {
+  .book {
+    margin: 0px;
+    padding: 0px;
+
+    .ace_editor {
+      display: none;
+    }
+  
+    .sidebar {
+      display: none;
+    }
+  }
+
+  header {
+    display: none !important;
+  }
+
+  body {
+    padding: 0px;
   }
 }

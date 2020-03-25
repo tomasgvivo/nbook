@@ -1,0 +1,237 @@
+{
+  "title": "COVID-19",
+  "timeoutMs": 300000,
+  "saved": false,
+  "status": "saving",
+  "blocks": [
+    {
+      "id": "b1923b8f-10ee-46ad-94e7-bed1dbe441b6",
+      "script": "const installResult = install('lodash');\nvar _ = require('lodash');",
+      "result": null,
+      "error": null
+    },
+    {
+      "id": "9badf79a-1887-47c6-ad68-314d36602aad",
+      "script": "const START_DATE = '2020-02-25';\n\nconst parse = response => {\n  const raw = response.body.toString();\n  const [ header, ...rows ] = raw.split('\\n').map(row => row.split(','));\n  \n  const results = [];\n  \n  for(let row of rows) {\n    const result = {\n      date: row[0],\n      countries: {}\n    }\n\n    if(!result.date || result.date < START_DATE) {\n      continue;\n    }\n\n    for(let index = 1; index <= header.length; index++) {\n      result.countries[header[index]] = parseInt(row[index] || 0, 10);\n    }\n    \n    results.push(result);\n  }\n  \n  return results;\n}\n\nvar totalCases = parse(request('GET', 'https://covid.ourworldindata.org/data/ecdc/total_cases.csv'))\nvar totalDeaths = parse(request('GET', 'https://covid.ourworldindata.org/data/ecdc/total_deaths.csv'))\nvar newCases = parse(request('GET', 'https://covid.ourworldindata.org/data/ecdc/new_cases.csv'))\nvar newDeaths = parse(request('GET', 'https://covid.ourworldindata.org/data/ecdc/new_deaths.csv'))\n\nmd`\n# Casos de COVID-19 (hasta la fecha ${totalCases[totalCases.length - 1].date})\n\n* Italia: ${newCases.reduce((res, data) => data.countries['Italy'] + res, 0)}\n* España: ${newCases.reduce((res, data) => data.countries['Spain'] + res, 0)}\n* China: ${newCases.reduce((res, data) => data.countries['China'] + res, 0)}\n`",
+      "result": {
+        "html": "<div class=\"markdown\"><h1>Casos de COVID-19 (hasta la fecha 2020-03-25)</h1>\n<ul>\n<li>Italia: 69044</li>\n<li>España: 39671</li>\n<li>China: 4613</li>\n</ul>\n</div>",
+        "md": "\n# Casos de COVID-19 (hasta la fecha 2020-03-25)\n\n* Italia: 69044\n* España: 39671\n* China: 4613\n"
+      },
+      "error": null
+    },
+    {
+      "id": "4ec3c5e8-5191-4c79-a206-bcdc3040108b",
+      "script": "var POPULATIONS = wikidata`\n  SELECT DISTINCT ?countryLabel ?population\n  {\n    ?country wdt:P31 wd:Q6256 ;\n             wdt:P1082 ?population .\n    SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" }\n  }\n  GROUP BY ?population ?countryLabel\n  ORDER BY DESC(?population)\n`",
+      "result": null,
+      "error": null
+    },
+    {
+      "id": "bebd3060-0511-4ba6-9f10-cfc5491a5720",
+      "script": "const getCountryDataset = (country, population) => {\n  if(!population) {\n    const countryPopulation = _.find(POPULATIONS, { countryLabel: 'Italy' });\n    if(countryPopulation) {\n      population = countryPopulation.population;\n    }\n  } else if(population && typeof population === 'string') {\n    const countryPopulation = _.find(POPULATIONS, { countryLabel: population });\n    if(countryPopulation) {\n      population = countryPopulation.population;\n    }\n  }\n  \n  return {\n    label: country,\n    data: totalCases.map(data => (data.countries[country] / population) * 100),\n    backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.2)`,\n    borderWidth: 1\n  }\n}\n\nplot('bar', {\n  labels: totalCases.map(data => data.date),\n  datasets: [\n    getCountryDataset('Italy'),\n    getCountryDataset('Germany'),\n    getCountryDataset('United Kingdom'),\n    getCountryDataset('United States', 'United States of America')\n  ]\n}, {\n\tscales: {\n\t\txAxes: [{\n\t\t\tdisplay: true,\n\t\t}],\n\t\tyAxes: [{\n\t\t\tdisplay: true,\n\t\t}]\n\t}\n})",
+      "result": {
+        "plot": {
+          "type": "bar",
+          "data": {
+            "labels": [
+              "2020-02-25",
+              "2020-02-26",
+              "2020-02-27",
+              "2020-02-28",
+              "2020-02-29",
+              "2020-03-01",
+              "2020-03-02",
+              "2020-03-03",
+              "2020-03-04",
+              "2020-03-05",
+              "2020-03-06",
+              "2020-03-07",
+              "2020-03-08",
+              "2020-03-09",
+              "2020-03-10",
+              "2020-03-11",
+              "2020-03-12",
+              "2020-03-13",
+              "2020-03-14",
+              "2020-03-15",
+              "2020-03-16",
+              "2020-03-17",
+              "2020-03-18",
+              "2020-03-19",
+              "2020-03-20",
+              "2020-03-21",
+              "2020-03-22",
+              "2020-03-23",
+              "2020-03-24",
+              "2020-03-25"
+            ],
+            "datasets": [
+              {
+                "label": "Italy",
+                "data": [
+                  0.00037788818786871326,
+                  0.0005313536964791514,
+                  0.0006600667037008092,
+                  0.001072608393513815,
+                  0.0014653480822157965,
+                  0.0018613881044362817,
+                  0.0027871316563766665,
+                  0.003028056003227462,
+                  0.004128717231648562,
+                  0.005097365119329499,
+                  0.006366343357194304,
+                  0.007650173095892378,
+                  0.00970793104467965,
+                  0.01216997984948367,
+                  0.015135329515859554,
+                  0.01674754243964878,
+                  0.02056437815379871,
+                  0.024938970232575824,
+                  0.029141944968390725,
+                  0.029290459976723405,
+                  0.03957099888686351,
+                  0.0461716659238716,
+                  0.051990153916994235,
+                  0.05893240547316749,
+                  0.06771459296590676,
+                  0.07759249118678938,
+                  0.08841263462720489,
+                  0.09758756180864613,
+                  0.10549021041870406,
+                  0.11415193573801793
+                ],
+                "backgroundColor": "rgba(62.172003255537426, 61.12508526379136, 146.94910635088513, 0.2)",
+                "borderWidth": 1
+              },
+              {
+                "label": "Germany",
+                "data": [
+                  0.000024752501388780347,
+                  0.00002805283490728439,
+                  0.00003465350194429248,
+                  0.00007755783768484508,
+                  0.0000940595052773653,
+                  0.00018316851027697456,
+                  0.00021287151194351097,
+                  0.0002590761812025676,
+                  0.0003234326848133965,
+                  0.00043234369092403,
+                  0.0006600667037008092,
+                  0.0011287140633283838,
+                  0.0013976912450864634,
+                  0.0014884504168453249,
+                  0.0018795399387880542,
+                  0.002138616119990622,
+                  0.00258581131174792,
+                  0.003909245052668042,
+                  0.005052810616829694,
+                  0.006262382851361427,
+                  0.007983506781261288,
+                  0.009920802556623162,
+                  0.011808593329207476,
+                  0.013528067092348085,
+                  0.0233300576423051,
+                  0.03001158285051654,
+                  0.03541752915382617,
+                  0.040881231293709616,
+                  0.048204671371270096,
+                  0.05206936192143834
+                ],
+                "backgroundColor": "rgba(90.67413805749065, 84.99157812672084, 198.0566137700272, 0.2)",
+                "borderWidth": 1
+              },
+              {
+                "label": "United Kingdom",
+                "data": [
+                  0.000021452167870276298,
+                  0.000021452167870276298,
+                  0.000021452167870276298,
+                  0.00002640266814803237,
+                  0.000029703001666536412,
+                  0.00003795383546279653,
+                  0.000059406003333072825,
+                  0.00006600667037008092,
+                  0.00008415850472185317,
+                  0.00014026417453642196,
+                  0.00018976917731398265,
+                  0.0002689771817580798,
+                  0.00033993435240591675,
+                  0.00045049552527580227,
+                  0.0005297035297198993,
+                  0.0006155122012010046,
+                  0.0007524760422189224,
+                  0.0009735983879586936,
+                  0.0011666678987911803,
+                  0.0018811901055473064,
+                  0.002295381962119564,
+                  0.0025462073095258715,
+                  0.0032178251805414448,
+                  0.004339938576832821,
+                  0.005407596470068879,
+                  0.0065726142021008075,
+                  0.008280536797926652,
+                  0.009377897692829247,
+                  0.010973608949025953,
+                  0.01332839691447859
+                ],
+                "backgroundColor": "rgba(234.36417285627422, 182.2545939434726, 71.67619540324705, 0.2)",
+                "borderWidth": 1
+              },
+              {
+                "label": "United States",
+                "data": [
+                  0.000016300371534983507,
+                  0.000016300371534983507,
+                  0.0000181456966144156,
+                  0.00001845325079432095,
+                  0.000020298575873753043,
+                  0.000021221238413469094,
+                  0.000027372322011576073,
+                  0.00003167808053025096,
+                  0.000038444272488168646,
+                  0.000048901114604950514,
+                  0.00007166012391794635,
+                  0.00010395331280800801,
+                  0.00013317095989901618,
+                  0.00017038501566756344,
+                  0.00023189585164863324,
+                  0.0003152430344029829,
+                  0.0004035110840358181,
+                  0.0005114626011825956,
+                  0.0006686227871142291,
+                  0.0009075923849006855,
+                  0.0011607094749627876,
+                  0.0014335100325388323,
+                  0.001976650714251679,
+                  0.0028956226038088623,
+                  0.004382647063651226,
+                  0.0060354432264625715,
+                  0.008226151649928374,
+                  0.010827752457747723,
+                  0.014283431223164226,
+                  0.01698652491035234
+                ],
+                "backgroundColor": "rgba(73.23893354248301, 26.56012127027242, 140.4032829966432, 0.2)",
+                "borderWidth": 1
+              }
+            ]
+          },
+          "options": {
+            "scales": {
+              "xAxes": [
+                {
+                  "display": true
+                }
+              ],
+              "yAxes": [
+                {
+                  "display": true
+                }
+              ]
+            }
+          }
+        }
+      },
+      "error": null
+    }
+  ]
+}
