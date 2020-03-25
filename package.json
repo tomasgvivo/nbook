@@ -10,7 +10,7 @@
     "start": "node ./lib/server"
   },
   "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "sass": "^1.26.3"
   },
