@@ -25,112 +25,135 @@ body {
     position: relative;
     padding-left: 3em;
     padding-right: 3em;
-    min-height: 5em;
-    margin: 20px 0px;
 
-    &:hover {
-      .sidebar {
-        .add, .run {
-          height: 1.5em;
-          opacity: 1;
+    .editor {
+      min-height: 5em;
+      margin: 20px 0px;
+
+      &:hover {
+        .sidebar {
+          .add, .run {
+            height: 1.5em;
+            opacity: 1;
+          }
         }
       }
-    }
 
-    .sidebar {
-      position: absolute;
-      left: 1em;
-      text-align: center;
-      padding-right: 5px;
+      .sidebar {
+        position: absolute;
+        left: 1em;
+        text-align: center;
+        padding-right: 5px;
 
-      .add, .run {
-        transition: height ease 0.2s, opacity ease 0.2s;
-        opacity: 0;
-        height: 0;
+        .add, .run {
+          transition: height ease 0.2s, opacity ease 0.2s;
+          opacity: 0;
+          height: 0;
+        }
+
+        .run {
+          cursor: pointer;
+          color: green;
+        }
+
+        .add {
+          cursor: pointer;
+          color: #cccccc;
+        }
+
+        .status-failed {
+          color: red;
+        }
+
+        .status-runned, .status-cached {
+          color: green;
+        }
+
+        .status-idle, .status-skipped {
+          color: #cccccc;
+        }
       }
 
-      .run {
-        cursor: pointer;
-        color: green;
-      }
+      &.has-error {
+        .ace_editor {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+        }
 
-      .add {
-        cursor: pointer;
-        color: #cccccc;
-      }
-
-      .status-failed {
-        color: red;
-      }
-
-      .status-runned, .status-cached {
-        color: green;
-      }
-
-      .status-idle, .status-skipped {
-        color: #cccccc;
-      }
-    }
-
-    &.has-error {
-      .ace_editor {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+        .error {
+          max-height: 120px;
+          pre {
+            height: calc(120px - 1.5em);
+            overflow-y: scroll;
+          }
+        }
       }
 
       .error {
-        max-height: 120px;
+        max-height: 0em;
+        font-family: monospace;
+        font-size: 12px;
+        background-color: #e8b5b5;
+        transition: max-height ease 0.5s;
+        padding-left: 0.2em;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        overflow: hidden;
+
+        summary {
+          height: 1.5em;
+          padding: 0px 0.3em;
+          outline: none;
+
+          span {
+            float: right;
+          }
+        }
+
         pre {
-          height: calc(120px - 1.5em);
-          overflow-y: scroll;
+          padding: 0.3em;
         }
-      }
-    }
 
-    .error {
-      max-height: 0em;
-      font-family: monospace;
-      font-size: 12px;
-      background-color: #e8b5b5;
-      transition: max-height ease 0.5s;
-      padding-left: 0.2em;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      overflow: hidden;
-
-      summary {
-        height: 1.5em;
-        padding: 0px 0.3em;
-        outline: none;
-
-        span {
-          float: right;
+        pre::-webkit-scrollbar {
+          background-color: transparent;
+          width: 3px;
+          height: 3px;
         }
-      }
 
-      pre {
-        padding: 0.3em;
-      }
+        pre::-webkit-scrollbar-thumb {
+          background-color: #888888;
+          border-radius: 3px;
+        }
 
-      pre::-webkit-scrollbar {
-        background-color: transparent;
-        width: 3px;
-        height: 3px;
-      }
-
-      pre::-webkit-scrollbar-thumb {
-        background-color: #888888;
-        border-radius: 3px;
-      }
-
-      pre::-webkit-scrollbar-track {
-        margin-bottom: 5px;
+        pre::-webkit-scrollbar-track {
+          margin-bottom: 5px;
+        }
       }
     }
 
     .result {
+      page-break-inside: avoid;
       overflow-y: auto;
       margin-top: 20px;
+
+      .markdown {
+        p {
+          white-space: pre-wrap;
+        }
+
+        pre {
+          code {
+            display: block;
+          }
+        }
+
+        code {
+          font-family: courier, monospace;
+          background-color: #eee;
+          padding: 0.2em 0.5em;
+          border-radius: 3px;
+        }
+      }
     }
   }
 }
@@ -156,11 +179,7 @@ body {
     margin: 0px;
     padding: 0px;
 
-    .ace_editor {
-      display: none;
-    }
-  
-    .sidebar {
+    .editor {
       display: none;
     }
   }

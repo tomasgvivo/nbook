@@ -53,9 +53,11 @@ const ViewResolver = memo(({ result, key }) => {
     }
 
     return (
-        <ErrorBoundary>
-            { output }
-        </ErrorBoundary>
+        <div class="result">
+            <ErrorBoundary>
+                { output }
+            </ErrorBoundary>
+        </div>
     );
 });
 

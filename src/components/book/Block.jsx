@@ -39,7 +39,7 @@ export default ({ block, index, actions, inFocus, isCodeHidden }) => {
     <div className={`block ${status} ${block.error ? 'has-error' : ''}`} key={index}>
       {
         !isCodeHidden && (
-          <>
+          <div className="editor">
             <div className="sidebar">
               <div className="status">
                 <FontAwesomeIcon icon={statusIcon[status]} className={`status-${status}`} />
@@ -94,12 +94,10 @@ export default ({ block, index, actions, inFocus, isCodeHidden }) => {
                 { block.error && block.error.stack }
               </pre>
             </details>
-          </>
+          </div>
         )
       }
-      <div className="result">
-        <ViewResolver result={block.result} />
-      </div>
+      { (block.results || []).map((result, index) => <ViewResolver result={result} key={index} />) }
     </div>
   );
 };

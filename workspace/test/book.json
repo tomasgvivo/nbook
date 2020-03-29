@@ -6,90 +6,137 @@
   "blocks": [
     {
       "id": "69d83691-f520-4870-9f9f-735f6d112eee",
-      "script": "install('lodash@4.17.14')\nvar _ = require('lodash');",
-      "result": {
-        "added": [],
-        "removed": [],
-        "updated": [
-          {
-            "action": "update",
-            "name": "lodash",
-            "version": "4.17.14",
-            "path": "/home/tomas/Projects/nbook/books/test/lib/node_modules/lodash",
-            "previousVersion": "4.17.14"
-          }
-        ],
-        "moved": [],
-        "failed": [],
-        "warnings": [],
-        "funding": "",
-        "elapsed": 772
-      },
+      "script": "install('lodash@4.17.14');\ninstall('@nbook/request@0.1.0');\ninstall('@nbook/md@0.1.2');\n\nvar md = require('@nbook/md');",
+      "results": [],
       "error": null
     },
     {
-      "id": "67f18f20-d86a-4d3a-b7ea-e4cd1db59a1c",
-      "script": "var ip = request('GET', 'http://ifconfig.me/').body.toString();\n\nip",
-      "result": "181.94.67.205",
+      "id": "d1213c58-444b-4445-959d-7d3ff62759f3",
+      "script": "md`\n# Demo Notebook\n---\n\nNBook notebooks are processed two times.\n1. For running (backend).\n2. For Rendering (frontend).\n`",
+      "results": [
+        {
+          "html": "<div class=\"markdown\"><h1>Demo Notebook</h1>\n<hr>\n<p>NBook notebooks are processed two times.</p>\n<ol>\n<li>For running (backend).</li>\n<li>For Rendering (frontend).</li>\n</ol>\n</div>",
+          "md": "\n# Demo Notebook\n---\n\nNBook notebooks are processed two times.\n1. For running (backend).\n2. For Rendering (frontend).\n"
+        }
+      ],
       "error": null
     },
     {
-      "id": "58c88290-9cf2-4017-80a4-4526d4967ef7",
-      "script": "data = { foo: [ 'abc', 'def', 'ghi' ] };\n\nmd`\n# Title: ${_.get(data, 'foo[1]')}\n---\n\nMy ip address is \"${ip}\"\n\nThis is a list:\n${data.foo.map(v => '* ' + v).join('\\n')}\n`",
-      "result": {
-        "html": "<div class=\"markdown\"><h1>Title: def</h1>\n<hr>\n<p>My ip address is &quot;181.94.67.205&quot;</p>\n<p>This is a list:</p>\n<ul>\n<li>abc</li>\n<li>def</li>\n<li>ghi</li>\n</ul>\n</div>",
-        "md": "\n# Title: def\n---\n\nMy ip address is \"181.94.67.205\"\n\nThis is a list:\n* abc\n* def\n* ghi\n"
-      },
+      "id": "7455d6b0-63d3-4695-a5a1-44e36b89ac16",
+      "script": "md`\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\nTo output a literal result, use \\`Result.literal()\\`.\\n\nEx: \\`Result.literal(42)\\`\n`\nResult.literal(42);",
+      "results": [
+        {
+          "html": "<div class=\"markdown\"><h3>Results</h3>\n<p>When running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\nTo output a literal result, use <code>Result.literal()</code>.</p>\n<p>Ex: <code>Result.literal(42)</code></p>\n</div>",
+          "md": "\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\nTo output a literal result, use \\`Result.literal()\\`.\\n\nEx: \\`Result.literal(42)\\`\n"
+        },
+        42
+      ],
+      "error": null
+    },
+    {
+      "id": "a5f9052f-b16c-486e-b6c1-0d1922d6757d",
+      "script": "md`\n### Markdown\nThere is a very useful package called \\`@nbook/md\\`, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n\\`\\`\\`\nmd\\`\n# Markdown Demo\n* List item 1\n* List item 2\n* List item 3\n\\`\n\\`\\`\\`\n`",
+      "results": [
+        {
+          "html": "<div class=\"markdown\"><h3>Markdown</h3>\n<p>There is a very useful package called <code>@nbook/md</code>, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!</p>\n<p>Ex:</p>\n<pre><code>md`\n# Markdown Demo\n* List item 1\n* List item 2\n* List item 3\n`\n</code></pre>\n</div>",
+          "md": "\n### Markdown\nThere is a very useful package called \\`@nbook/md\\`, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n\\`\\`\\`\nmd\\`\n# Markdown Demo\n* List item 1\n* List item 2\n* List item 3\n\\`\n\\`\\`\\`\n"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "54192cd9-be4b-4ced-8245-dbf370f791d4",
+      "script": "md`\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports the await keyword for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n`",
+      "results": [
+        {
+          "html": "<div class=\"markdown\"><h3>Synchronous vs Asynchronous</h3>\n<p>This is a delicate subject...\nThe power of Node.js rests on two key features:</p>\n<ul>\n<li>Event-driven with event loop.</li>\n<li>IO calls are handled asynchronously (promises, callbacks, etc).</li>\n</ul>\n<p>Events don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports the await keyword for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.</p>\n<p>We do not recomend using asynchronous callbacks and events in nbook.</p>\n</div>",
+          "md": "\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports the await keyword for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "dec94d34-27e5-4a38-90a5-4112cb9fa402",
+      "script": "const request = require('@nbook/request');\n\nmd`\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package \\`@nbook/request\\` for making synchronous http requests.\nEj:\n\\`\\`\\`\nrequest('https://jsonplaceholder.typicode.com/todos/1');\n\\`\\`\\`\n`\nResult.literal(request('https://jsonplaceholder.typicode.com/todos/1'));\n\nmd`\nYou can also use any other promise-based http request package.\n`",
+      "results": [
+        {
+          "html": "<div class=\"markdown\"><h3>Making http requests</h3>\n<p>As discused before, nbook does't support asynchronous calls.\nSo we provide the package <code>@nbook/request</code> for making synchronous http requests.\nEj:</p>\n<pre><code>request('https://jsonplaceholder.typicode.com/todos/1');\n</code></pre>\n</div>",
+          "md": "\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package \\`@nbook/request\\` for making synchronous http requests.\nEj:\n\\`\\`\\`\nrequest('https://jsonplaceholder.typicode.com/todos/1');\n\\`\\`\\`\n"
+        },
+        {
+          "userId": 1,
+          "id": 1,
+          "title": "delectus aut autem",
+          "completed": false
+        },
+        {
+          "html": "<div class=\"markdown\"><p>You can also use any other promise-based http request package.</p>\n</div>",
+          "md": "\nYou can also use any other promise-based http request package.\n"
+        }
+      ],
+      "error": null
+    },
+    {
+      "id": "02f36f3b-4b2d-4f16-b416-fa79bf6d2905",
+      "script": "md`\n### Examples\nThe following blocks contain various examples.\n`",
+      "results": [
+        {
+          "html": "<div class=\"markdown\"><h3>Examples</h3>\n<p>The following blocks contain various examples.</p>\n</div>",
+          "md": "\n### Examples\nThe following blocks contain various examples.\n"
+        }
+      ],
       "error": null
     },
     {
       "id": "be267a1d-f421-43a8-bdc9-5fda1d9ff2fd",
-      "script": "plot('line', {\n  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],\n  datasets: [{\n    label: '# of Votes',\n    data: [12, 19, 3, 5, 2, 3],\n    backgroundColor: [\n      'rgba(255, 99, 132, 0.2)',\n      'rgba(54, 162, 235, 0.2)',\n      'rgba(255, 206, 86, 0.2)',\n      'rgba(75, 192, 192, 0.2)',\n      'rgba(153, 102, 255, 0.2)',\n      'rgba(255, 159, 64, 0.2)'\n    ],\n    borderColor: [\n      'rgba(255, 99, 132, 1)',\n      'rgba(54, 162, 235, 1)',\n      'rgba(255, 206, 86, 1)',\n      'rgba(75, 192, 192, 1)',\n      'rgba(153, 102, 255, 1)',\n      'rgba(255, 159, 64, 1)'\n    ],\n    borderWidth: 1\n  }]\n})",
-      "result": {
-        "plot": {
-          "type": "line",
-          "data": {
-            "labels": [
-              "Red",
-              "Blue",
-              "Yellow",
-              "Green",
-              "Purple",
-              "Orange"
-            ],
-            "datasets": [
-              {
-                "label": "# of Votes",
-                "data": [
-                  12,
-                  19,
-                  3,
-                  5,
-                  2,
-                  3
-                ],
-                "backgroundColor": [
-                  "rgba(255, 99, 132, 0.2)",
-                  "rgba(54, 162, 235, 0.2)",
-                  "rgba(255, 206, 86, 0.2)",
-                  "rgba(75, 192, 192, 0.2)",
-                  "rgba(153, 102, 255, 0.2)",
-                  "rgba(255, 159, 64, 0.2)"
-                ],
-                "borderColor": [
-                  "rgba(255, 99, 132, 1)",
-                  "rgba(54, 162, 235, 1)",
-                  "rgba(255, 206, 86, 1)",
-                  "rgba(75, 192, 192, 1)",
-                  "rgba(153, 102, 255, 1)",
-                  "rgba(255, 159, 64, 1)"
-                ],
-                "borderWidth": 1
-              }
-            ]
+      "script": "Result.literal({\n  plot: {\n    type: 'line',\n    data: {\n      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],\n      datasets: [{\n        label: '# of Votes',\n        data: [12, 19, 3, 5, 2, 3],\n        backgroundColor: [\n          'rgba(255, 99, 132, 0.2)',\n          'rgba(54, 162, 235, 0.2)',\n          'rgba(255, 206, 86, 0.2)',\n          'rgba(75, 192, 192, 0.2)',\n          'rgba(153, 102, 255, 0.2)',\n          'rgba(255, 159, 64, 0.2)'\n        ],\n        borderColor: [\n          'rgba(255, 99, 132, 1)',\n          'rgba(54, 162, 235, 1)',\n          'rgba(255, 206, 86, 1)',\n          'rgba(75, 192, 192, 1)',\n          'rgba(153, 102, 255, 1)',\n          'rgba(255, 159, 64, 1)'\n        ],\n        borderWidth: 1\n      }]\n    }\n  }\n});",
+      "results": [
+        {
+          "plot": {
+            "type": "line",
+            "data": {
+              "labels": [
+                "Red",
+                "Blue",
+                "Yellow",
+                "Green",
+                "Purple",
+                "Orange"
+              ],
+              "datasets": [
+                {
+                  "label": "# of Votes",
+                  "data": [
+                    12,
+                    19,
+                    3,
+                    5,
+                    2,
+                    3
+                  ],
+                  "backgroundColor": [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)"
+                  ],
+                  "borderColor": [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)"
+                  ],
+                  "borderWidth": 1
+                }
+              ]
+            }
           }
         }
-      },
+      ],
       "error": null
     }
   ]

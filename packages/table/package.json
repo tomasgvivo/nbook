@@ -1,0 +1,14 @@
+{
+  "name": "@nbook/table",
+  "version": "0.1.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@nbook/core": "^0.1.4"
+  }
+}
