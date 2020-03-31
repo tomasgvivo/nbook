@@ -30,6 +30,7 @@ export default withRouter(class Book extends Component {
 
   componentDidMount() {
     const pathname = this.props.location.pathname;
+    console.log('path', pathname);
     this.start(pathname.substring(pathname.indexOf('explore') + 'explore'.length));
   }
 
@@ -41,7 +42,10 @@ export default withRouter(class Book extends Component {
   }
 
   start(path) {
-    this.setState(this.initialState);
+    this.setState({
+      ...this.initialState,
+      notebookPath: path
+    });
 
     if(this.socket) {
       this.socket.disconnect();
@@ -187,6 +191,7 @@ export default withRouter(class Book extends Component {
   getContext() {
     return {
       ...this.state.book,
+      notebookPath: this.state.notebookPath,
       isCodeHidden: this.state.isCodeHidden,
       actions: this.actions
     };

@@ -10,7 +10,7 @@ let cachedContexts = new Map();
 class Runtime extends EventEmitter {
 
     static main() {
-        if(process.channel) {
+        if (process.channel) {
             this.startIPC();
         } else {
             this.startSTDIN();
@@ -22,31 +22,31 @@ class Runtime extends EventEmitter {
 
         process.on('message', async payload => {
             const { action, ...data } = JSON.parse(payload);
-        
-            if(action === 'run') {
-                if(isRunning) {
+
+            if (action === 'run') {
+                if (isRunning) {
                     throw new Error('already running');
                 }
-        
+
                 isRunning = true;
-        
+
                 const runtime = new Runtime(data.book);
-        
+
                 runtime.on('output', ({ index, output }) => {
                     process.send(JSON.stringify({ action: 'block_output', index, ...output }));
                 });
-        
+
                 runtime.on('progress', data => {
                     process.send(JSON.stringify({ action: 'progress', ...data }));
                 });
-        
+
                 runtime.on('finalized', () => {
                     process.send(JSON.stringify({ action: 'finalized' }));
                     isRunning = false;
                 });
-        
+
                 runtime.run(data.targetIndex);
-            } else if(action === 'gc') {
+            } else if (action === 'gc') {
                 global.gc();
             }
         });
@@ -110,7 +110,7 @@ class Runtime extends EventEmitter {
             },
             setError(error) {
                 this.error = error;
-                if(error) {
+                if (error) {
                     this.results = [];
                 }
             },
@@ -132,7 +132,7 @@ class Runtime extends EventEmitter {
 
         this.emit('progress', { value: progress, index: null, message: 'running' });
 
-        for(let index = 0; index < count; index++) {
+        for (let index = 0; index < count; index++) {
             createContext(rollingContext);
 
             const block = this.book.blocks[index];
@@ -141,23 +141,23 @@ class Runtime extends EventEmitter {
             hash = this.hashBlock(block, hash);
             this.emit('progress', { value: progress, index: index, message: `running block ${index} (${block.id})` });
 
-            if(!failed) {
-                if(this.cachedContexts.has(hash) && index < targetIndex) {
+            if (!failed) {
+                if (this.cachedContexts.has(hash) && index < targetIndex) {
                     // Use cache if necessary
                     output.setStratergy('cache');
                     output.setContext(this.cachedContexts.get(hash));
                     output.setResults(block.results);
                     output.setError(block.error);
-                } else if(index <= targetIndex) {
+                } else if (index <= targetIndex) {
                     await this.runBlock(block, rollingContext, output);
                 }
 
-                if(output.context) {
+                if (output.context) {
                     rollingContext = cloneDeep(output.context);
                     contexts.set(hash, cloneDeep(output.context));
                 }
 
-                if(output.error) {
+                if (output.error) {
                     failed = true;
                 }
             }
@@ -182,9 +182,9 @@ class Runtime extends EventEmitter {
             let awaitPromise = false;
             let code = block.script || '';
 
-            if(code.includes('await')) {
+            if (code.includes('await')) {
                 const potentialWrappedCode = processTopLevelAwait(code);
-                if(potentialWrappedCode !== null) {
+                if (potentialWrappedCode !== null) {
                     code = potentialWrappedCode;
                     awaitPromise = true;
                 }
@@ -193,7 +193,7 @@ class Runtime extends EventEmitter {
             output.setStratergy('run');
             Result.setCollector(result => output.addResult(result));
 
-            if(awaitPromise) {
+            if (awaitPromise) {
                 await runInContext(code, rollingContext);
             } else {
                 runInContext(code, rollingContext);
@@ -207,14 +207,14 @@ class Runtime extends EventEmitter {
                 error.stack.match(/evalmachine.*:(\d{1,})/) ||
                 []
             );
-    
+
             const message = error.message;
             const line = parsedStack[1] ? parseInt(parsedStack[1], 0) : null;
             const column = parsedStack[2] ? parseInt(parsedStack[2], 0) : null;
             const stack = error.stack
                 .replace(/\n    at Script.runInContext(.*?\n){1,}.*/m, '')
                 .replace(/evalmachine\.\<anonymous\>/g, '(current block)');
-    
+
             output.setError({ message, line, column, stack });
         }
     }

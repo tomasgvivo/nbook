@@ -1,15 +1,20 @@
 {
   "name": "@nbook/md",
-  "version": "0.1.2",
+  "version": "0.1.7",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "parcel build src/renderers/*.jsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@nbook/core": "^0.1.4",
-    "marli": "^2.0.0"
+    "@nbook/core": "^0.1.10"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4",
+    "react": "^16.13.1",
+    "react-markdown": "^4.3.1"
   }
 }

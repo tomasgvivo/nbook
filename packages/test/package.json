@@ -1,0 +1,16 @@
+{
+  "name": "@nbook/test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "parcel": "^1.12.4",
+    "react": "^16.13.1",
+    "react-katex": "^2.0.2"
+  }
+}

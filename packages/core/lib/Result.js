@@ -1,9 +1,11 @@
+const cloneDeep = require('lodash.clonedeep');
+const Path = require('path');
 
 const defaultCollector = result => {
     console.warn('Created result without collector. This result will be lost.');
 }
 
-global._resultCollector = defaultCollector;
+global._resultCollector = global._resultCollector || defaultCollector;
 
 module.exports = class Result {
 
@@ -11,12 +13,24 @@ module.exports = class Result {
         global._resultCollector(this);
     }
 
+    getRenderer() {
+        return 'json';
+    }
+
+    relative(...path) {
+        return Path.relative(process.cwd(), Path.join(...path));
+    }
+
     toJSON() {
-        return this.valueOf();
+        return { value: this.valueOf(), renderer: this.getRenderer() };
     }
 
     valueOf() {
         throw new Error(`Method not implemented.`);
+    }
+
+    get value() {
+        return cloneDeep(this.valueOf());
     }
 
     static setCollector(fn) {
@@ -36,5 +50,4 @@ module.exports = class Result {
 
         return new LiteralResult;
     }
-
 };

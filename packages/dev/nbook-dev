@@ -1,0 +1,81 @@
+#!/usr/bin/env node
+
+module.paths = [ ...module.paths, __dirname ];
+
+if(process.env.npm_lifecycle_event === 'build') {
+    const { version } = require('./package.json');
+    const rollup = require('rollup');
+    const Path = require('path');
+    const glob = require("glob");
+    const package_dir = process.env.PWD;
+    let package = null;
+
+    try {
+        package = require(Path.join(package_dir, 'package.json'));
+    } catch(error) {}
+
+    const babel = require('rollup-plugin-babel');
+    const resolve = require('rollup-plugin-node-resolve');
+    const commonJS = require('rollup-plugin-commonjs');
+    const json = require('@rollup/plugin-json');
+    const builtins = require('rollup-plugin-node-builtins');
+    const globals = require('rollup-plugin-node-globals');
+    const { terser } = require('rollup-plugin-terser');
+
+    glob(
+        Path.resolve(package_dir, 'src/renderers/*.jsx'),
+        async (error, files) => {
+            for(let file of files) {
+                const dir = Path.resolve(package_dir, 'dist');
+                const format = 'amd';
+                let banner = null;
+
+                if(package) {
+                    banner = [
+                        `/**`,
+                        ` * @preserve`,
+                        package.name ? ` * @package ${package.name}` : '',
+                        package.version ? ` * @version ${package.version}` : '',
+                        package.name ? ` * @author ${JSON.stringify(package.author)}` : '',
+                        package.license ? ` * @license ${package.license}` : '',
+                        package.description ? ['', ...package.description.split('\n')].map(l => ' * ' + l).join('\n') : '',
+                        ` * `,
+                        ` * Built with @nbook/dev ${version}`,
+                        ` */`
+                    ].filter(l => l).join('\n');
+                }
+
+                const bundle = await rollup.rollup({
+                    input: file,
+                    external: [
+                        'react'
+                    ],
+                    plugins: [
+                        json(),
+                        resolve({ preferBuiltins: false }),
+                        globals(),
+                        builtins(),
+                        commonJS({ include: 'node_modules/**' }),
+                        babel({ exclude: 'node_modules/**', presets: ["@babel/preset-react"] }),
+                        terser({
+                            output: {
+                                comments: function(node, comment) {
+                                    if (comment.type == "comment2") {
+                                        // multiline comment
+                                        return /@preserve|@license|@cc_on/i.test(comment.value);
+                                    }
+                                }
+                            }
+                        })
+                    ]
+                });
+
+                console.log(banner);
+
+                await bundle.write({ dir, format, banner });
+            }
+        }
+    );
+} else {
+    console.warn(`nbook-dev is intended to be used inside package.json scripts.`)
+}

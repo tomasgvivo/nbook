@@ -1,15 +1,21 @@
 {
   "name": "@nbook/latex",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "parcel build src/renderers/*.jsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@nbook/core": "^0.1.4",
-    "katex": "^0.11.1"
+    "@nbook/core": "^0.1.10"
+  },
+  "devDependencies": {
+    "katex": "^0.11.1",
+    "react": "^16.13.1",
+    "react-katex": "^2.0.2",
+    "parcel": "^1.12.4"
   }
 }

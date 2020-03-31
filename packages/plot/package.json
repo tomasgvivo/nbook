@@ -1,0 +1,21 @@
+{
+  "name": "@nbook/plot",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "parcel build --no-minify --no-source-maps src/renderers/*.jsx",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@nbook/core": "^0.1.10"
+  },
+  "devDependencies": {
+    "lodash.isequal": "^4.5.0",
+    "parcel": "^1.12.4",
+    "react": "^16.13.1",
+    "react-chartjs-2": "^2.9.0"
+  }
+}

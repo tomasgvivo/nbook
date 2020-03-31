@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-dracula";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle } from '@fortawesome/free-solid-svg-icons'
-import ViewResolver from './viewers/resolver';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle } from '@fortawesome/free-solid-svg-icons';
+import Result from './Result';
 
-export default ({ block, index, actions, inFocus, isCodeHidden }) => {
+export default ({ block, index, actions, inFocus, isCodeHidden, notebookPath }) => {
   let [ script, updateLocalScript ] = useState(block.script);
 
   let updateScript = script => {
@@ -97,7 +97,7 @@ export default ({ block, index, actions, inFocus, isCodeHidden }) => {
           </div>
         )
       }
-      { (block.results || []).map((result, index) => <ViewResolver result={result} key={index} />) }
+      { (block.results || []).map((result, index) => <Result {...result} notebookPath={notebookPath} key={index} />) }
     </div>
   );
 };
