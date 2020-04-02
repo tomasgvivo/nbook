@@ -1,14 +1,16 @@
-import React, { Component, Suspense } from 'react';
+import React, { Component, Suspense, memo } from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 import JSONRenderer from './renderers/json';
 import HTMLRenderer from './renderers/html';
 import csstree from 'css-tree';
+import isEqual from 'lodash.isequal';
 const Url = require('url');
 
 const { v4: uuid } = require('uuid')
-
+const cache = new Map();
 export default class Result extends Component {
-    componentDidMount() {
+    constructor(props) {
+        super(props);
         this.loadRenderer();
     }
 
@@ -18,8 +20,100 @@ export default class Result extends Component {
         }
     }
 
+    shouldComponentUpdate(newProps) {
+        return !isEqual(newProps, this.props);
+    }
+
     getDefaultRenderer() {
         return () => null;
+    }
+
+    async fetchRenderer(basePath, url) {
+        let externalModule = {};
+        const response = await fetch(url);
+        const script = await response.text();
+
+        {
+            /**
+             * Fix react hooks collition by overriding local react into externalModule's react.
+             */
+            function fixReactHooks_script(script) {
+                const head = script.substr(
+                    script.indexOf('parcelRequire'),
+                    script.indexOf('{') - script.indexOf('parcelRequire') + 1
+                );
+
+                const [ args ] = head.match(/(\w{1,},(| )\w{1,},(| )\w{1,},(| )\w{1,})/);
+                return script.replace(head, head + `fixReactHooks(${args});`);
+            }
+
+            function fixReactHooks(modules, cache, entry, globalName) {
+                const mmap = Object.keys(modules).reduce((mmap, key) => {
+                    return { ...mmap, ...modules[key][1] }
+                }, {});
+
+                if(mmap['react']) {
+                    cache[mmap['react']] = { exports: React };
+                }
+            }
+
+            const module = { exports: null };
+            const parcelLoader = eval(fixReactHooks_script(script));
+
+            if(parcelLoader.isParcelRequire) {
+                externalModule = module.exports;
+            } else {
+                throw new Error('Module not supported.');
+            }
+        }
+
+        let styles = [];
+
+        if(this.props.renderer.css) {
+            const cssUrl = `${basePath}/${this.props.renderer.css}`;
+            try {
+                const response = await fetch(cssUrl);
+                const rawStyle = await response.text();
+                const ast = csstree.parse(rawStyle);
+
+                csstree.walk(ast, node => {
+                    if(node.type === 'Url' && !Url.parse(node.value.value).host) {
+                        node.value.value = Url.resolve(url, node.value.value.replace(/^\//, ''));
+                    } else if(node.type === 'Selector') {
+                        node.children.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
+                        node.children.prependData({ type: 'ClassSelector', loc: null, name: '_' + this.uuid });
+                    }
+                });
+
+                styles.push({ url: cssUrl, css: csstree.generate(ast) });
+            } catch(error) {
+                styles.push({ url: cssUrl, error });
+            }
+        }
+
+        const ExternalRenderer = externalModule.default;
+
+        const StyleAlert = ({ error, url }) => {
+            <Alert severity="warning">
+                Couldn't load css {style.url}
+                <pre style={{ color: 'white', margin: 0 }}>
+                    {style.error.stack}
+                </pre>
+            </Alert>
+        };
+
+        externalModule.default = ({ value }) => (
+            <>
+                <ExternalRenderer value={value} />
+                { styles.map((style, index) => (
+                        style.error ? <StyleAlert key={index} {...style} /> : <style key={index} children={style.css} />
+                )) }
+            </>
+        );
+
+        cache.set(url, externalModule);
+
+        return externalModule;
     }
 
     loadRenderer() {
@@ -42,101 +136,16 @@ export default class Result extends Component {
             const basePath = `/workspace/${this.props.notebookPath}`;
             const url = `${basePath}/${this.props.renderer.path}`;
 
-            this.Renderer = React.lazy(async () => {
-                let externalModule = {};
-                const response = await fetch(url);
-                const script = await response.text();
-
-                try {
-                    const module = { exports: null };
-                    const parcelLoader = eval(script);
-                    externalModule = module.exports;
-                    const key = Object.keys(parcelLoader.modules).find(key => parcelLoader.modules[key][0] === module.exports);
-
-                    console.log(module);
-                } catch(error) {
-                    console.log(error);
-                    externalModule.default = () => (
-                        <Alert severity="warning">
-                            { error.message }
-                            <pre style={{ color: 'white', margin: 0 }}>
-                                {error.stack.split('\n').slice(1).join('\n')}
-                            </pre>
-                        </Alert>
-                    );
-                }
-
-                let styles = [];
-
-                if(this.props.renderer.css) {
-                    const cssUrl = `${basePath}/${this.props.renderer.css}`;
-                    let css = '';
-                    let error = null;
-                    try {
-                        const response = await fetch(cssUrl);
-                        const rawStyle = await response.text();
-                        const ast = csstree.parse(rawStyle);
-
-                        csstree.walk(ast, node => {
-                            switch(node.type) {
-                                case 'Url': {
-                                    if(!Url.parse(node.value.value).host) {
-                                        node.value.value = Url.resolve(url, node.value.value.replace(/^\//, ''))
-                                    }
-                                    break;
-                                }
-                        
-                                case 'Selector': {
-                                    node.children.prependData({ type: 'WhiteSpace', loc: null, value: ' ' });
-                                    node.children.prependData({ type: 'ClassSelector', loc: null, name: '_' + this.uuid });
-                                    break;
-                                }
-                            }
-                        });
-
-                        css = csstree.generate(ast);
-                    } catch(err) {
-                        console.log(err);
-                        error = err;
-                    }
-
-                    styles.push({ url: cssUrl, css, error })
-                }
-    
-                const ExternalRenderer = externalModule.default;
-
-                externalModule.default = ({ value }) => (
-                    <>
-                        <ExternalRenderer value={value} />
-                        {
-                            styles.map((style, index) => {
-                                if(style.error) {
-                                    return (
-                                        <Alert severity="warning">
-                                            Couldn't load css {style.url}
-                                            <pre style={{ color: 'white', margin: 0 }}>
-                                                {style.error.stack}
-                                            </pre>
-                                        </Alert>
-                                    )
-                                } else {
-                                    return (
-                                        <style key={index}>
-                                            {style.css}
-                                        </style>
-                                    )
-                                }
-                            })
-                        }
-                    </>
-                );
-
-                return externalModule;
-            });
+            if(cache.has(url)) {
+                this.Renderer = React.lazy(async () => cache.get(url));
+            } else {
+                this.Renderer = React.lazy(() => this.fetchRenderer(basePath, url));
+            }
         }
     }
 
     render() {
+        console.log('render', 'result')
         const Renderer = this.Renderer || this.getDefaultRenderer();
 
         if(Renderer) {

@@ -1,10 +1,11 @@
 {
   "name": "@nbook/plot",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build --no-minify --no-source-maps src/renderers/*.jsx",
+    "build": "parcel build src/renderers/*.jsx",
+    "serve": "parcel serve --out-dir public src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",

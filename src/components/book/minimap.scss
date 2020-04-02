@@ -1,0 +1,51 @@
+.minimap {
+    height: calc(100vh - 145px) !important;
+    background-color: rgba(0,0,0,0.05);
+    position: fixed;
+    top: 146px;
+    right: 0;
+
+    @media (max-width: 1630px) {
+        display: none;
+    }
+    
+    @media print {
+        display: none;
+    }
+      
+    .minimap-node {
+        opacity: 0.9;
+        pointer-events: none;
+
+        &.scrollable {
+            pointer-events: fill;
+        }
+
+        &.scrollable:hover {
+            cursor: pointer;
+            opacity: 1;
+        }
+    }
+
+    .minimap-node-book {
+        background-color: white;
+    }
+
+    .minimap-node-editor {
+        background-color: #282a36;
+
+        &.minimap-node-has-error {
+            background-color: #e8b5b5;
+        }
+    }
+
+    .minimap-node-result {
+        background-color: #eeeeee;
+        &.scrollable:hover {
+            background-color: #dddddd;
+        }
+    }
+    .minimap-node-ace_line {
+        background-color: rgba(255,255,255,0.3);
+    }
+}

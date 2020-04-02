@@ -93,12 +93,25 @@ class Runtime extends EventEmitter {
         this.book = { blocks: [], ...book };
     }
 
-    createOutput() {
+    createOutput(block) {
+        var timeStartedAt = null;
+
         return {
             stratergy: null,
             context: null,
             results: [],
             error: null,
+            time: null,
+            executionCount: block.executionCount || 0,
+            increseExecutionCount() {
+                this.executionCount++;
+            },
+            startTimer() {
+                timeStartedAt = new Date;
+            },
+            stopTimer() {
+                this.time = (new Date) - timeStartedAt;
+            },
             setStratergy(stratergy) {
                 this.stratergy = stratergy;
             },
@@ -136,7 +149,7 @@ class Runtime extends EventEmitter {
             createContext(rollingContext);
 
             const block = this.book.blocks[index];
-            const output = this.createOutput();
+            const output = this.createOutput(block);
 
             hash = this.hashBlock(block, hash);
             this.emit('progress', { value: progress, index: index, message: `running block ${index} (${block.id})` });
@@ -149,7 +162,10 @@ class Runtime extends EventEmitter {
                     output.setResults(block.results);
                     output.setError(block.error);
                 } else if (index <= targetIndex) {
+                    output.increseExecutionCount();
+                    output.startTimer();
                     await this.runBlock(block, rollingContext, output);
+                    output.stopTimer();
                 }
 
                 if (output.context) {

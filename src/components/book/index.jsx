@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-
-import Container from '@material-ui/core/Container';
+import { Prompt } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import AppBar from './AppBar'
 import Content from './Content';
+import Hotkeys from 'react-hot-keys';
 import io from 'socket.io-client';
 const patch = require('socketio-wildcard')(io.Manager);
 
@@ -30,7 +30,6 @@ export default withRouter(class Book extends Component {
 
   componentDidMount() {
     const pathname = this.props.location.pathname;
-    console.log('path', pathname);
     this.start(pathname.substring(pathname.indexOf('explore') + 'explore'.length));
   }
 
@@ -156,8 +155,23 @@ export default withRouter(class Book extends Component {
       });
     });
 
+    this.socket.on('book:progress', ({ sessionId, progress, status }) => {
+      if(sessionId !== this.state.sessionId) {
+        return;
+      }
+
+      this.setState({
+        book: { ...this.state.book, status, progress }
+      });
+    });
+
     this.createActions();
     this.socket.open();
+  }
+
+  emit(eventName, payload = {}) {
+    const sessionId = this.state.sessionId;
+    this.socket.emit(eventName, { sessionId, ...payload });
   }
 
   createActions() {
@@ -180,8 +194,7 @@ export default withRouter(class Book extends Component {
 
     for(let action in actionEventNames) {
       actions[action] = (data = {}) => {
-        const sessionId = this.state.sessionId;
-        this.socket.emit(`book:action:${actionEventNames[action]}`, { sessionId, ...data });
+        this.emit(`book:action:${actionEventNames[action]}`, data);
       };
     }
 
@@ -193,18 +206,39 @@ export default withRouter(class Book extends Component {
       ...this.state.book,
       notebookPath: this.state.notebookPath,
       isCodeHidden: this.state.isCodeHidden,
-      actions: this.actions
+      actions: this.actions,
+      onKeyDown: (keyName, event) => this.onKeyDown(keyName, event)
     };
+  }
+
+  onKeyUp(keyName, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  }
+
+  onKeyDown(keyName, event) {
+    switch(keyName) {
+      case 'ctrl+s': {
+        this.emit(`book:action:save`);
+      }
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
   }
 
   render() {
     return (
-      <>
+      <Hotkeys
+        keyName="ctrl+s"
+        onKeyDown={this.onKeyDown.bind(this)}
+      >
+        <Prompt when={!this.state.book.saved} message="You have unsaved changes, are you sure you want to leave?" />
         <AppBar {...this.getContext()}/>
-        <Container>
-          <Content {...this.getContext()} />
-        </Container>
-      </>
+        <Content {...this.getContext()} />
+      </Hotkeys>
     );
   }
 });

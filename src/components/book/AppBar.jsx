@@ -6,7 +6,7 @@ import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
 import ResourceGraph from './ResourceGraph';
 const prettyBytes = require('pretty-bytes');
 
-export default ({ title, stats, status, blocks, actions, focus, saved, isCodeHidden }) => {
+export default ({ title, stats, status, blocks, actions, focus, saved, isCodeHidden, progress }) => {
     return (
         <AppBar color="inherit" elevation={4}>
             <Grid container direction="row" justify="center">
@@ -87,11 +87,15 @@ export default ({ title, stats, status, blocks, actions, focus, saved, isCodeHid
                     </Grid>
                 </Hidden>
                 <Grid item xs={12}>
-                    <LinearProgress
-                        className={`progressbar book-state-${status}`}
-                        variant="determinate"
-                        value={ (blocks.filter(block => block.hasRun).length / blocks.length) * 100 }
-                    />
+                    {
+                        progress && progress.message !== 'done' && (
+                            <LinearProgress
+                                className={`progressbar book-state-${status}`}
+                                variant="determinate"
+                                value={ progress.value }
+                            />
+                        )
+                    }
                 </Grid>
             </Grid>
         </AppBar>

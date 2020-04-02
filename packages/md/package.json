@@ -1,20 +1,23 @@
 {
   "name": "@nbook/md",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "parcel build src/renderers/*.jsx",
+    "serve": "parcel serve --out-dir public src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@nbook/core": "^0.1.10"
+    "@nbook/core": "^0.1.10",
+    "remark-parse": "^8.0.0",
+    "remark-react": "^7.0.1",
+    "unified": "^9.0.0"
   },
   "devDependencies": {
     "parcel": "^1.12.4",
-    "react": "^16.13.1",
-    "react-markdown": "^4.3.1"
+    "react": "^16.13.1"
   }
 }

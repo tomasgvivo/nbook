@@ -1,20 +1,38 @@
 const { Result } = require('@nbook/core');
+const Papa = require('papaparse');
 
-class TableResult extends Result {
+const table = (data, options = {}) => {
+    options = {
+        dense: true,
+        pagination: true,
+        paginationRowsPerPageOptions: [ 10, 15, 20, 25, 30, 50, 100 ],
+        paginationPerPage: 10,
+        ...options
+    };
 
-    constructor(array) {
-        super();
-        const header = Object.keys(array[0]);
-        const rows = array.map(row => header.map(key => row[key]));
-        this.table = { header, rows };
+    class TableResult extends Result {
+        getRenderer() {
+            return {
+                path: this.relative(__dirname, './dist/table.js')
+            };
+        }
+
+        valueOf() {
+            return { data, options };
+        }
     }
 
-    valueOf() {
-        return {
-            table: this.table
-        };
-    }
-
+    return new TableResult;
 }
 
-module.exports = array => new TableResult(array);
+table.from_csv = (csvString, { format = {}, ...options } = {}) => {
+    format = {
+        skipEmptyLines: true,
+        header: true,
+        ...format
+    }
+    const { errors, meta, data } = Papa.parse(csvString, format);
+    return table(data, { ...options, from_csv: { errors, meta } });
+}
+
+module.exports = table;
