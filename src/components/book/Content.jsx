@@ -8,21 +8,8 @@ import './minimap.scss';
 
 const minimap_child = ({ width, height, left, top, node }) => {
     let className = node.className.split(' ').filter(v => v).map(className => `minimap-node minimap-node-${className}`).join(' ');
-    
-    if(className.includes('ace_line')) {
-        let lineLeft = 0;
-        let lineWidth = 0;
-        let isFirst = true;
-
-        for(let child of node.children) {
-            lineLeft = isFirst ? child.offsetLeft : Math.min(lineLeft, child.offsetLeft);
-            lineWidth = Math.max(lineWidth, child.offsetLeft + child.offsetWidth);
-            isFirst = false;
-        }
-
-        lineWidth -= lineLeft;
-        width = (lineWidth / 10);
-        left = (left + lineLeft / 10);
+    if(node.parentNode.className.includes('view-line')) {
+        className = 'minimap-node minimap-node-code-line';
         height = 1;
     }
 
@@ -58,7 +45,7 @@ export default class BookContent extends Component {
         return (
             <div class="book-container" ref={bookContainer => { this.bookContainer = bookContainer; }} >
                 <Minimap
-                    selector=".book, .editor, .result, .ace_line"
+                    selector=".book, .editor, .result, .view-line > span"
                     childComponent={minimap_child}
                     height={this.state.minimapHeight}
                 >

@@ -224,8 +224,10 @@ export default withRouter(class Book extends Component {
       }
     }
 
-    event.preventDefault();
-    event.stopPropagation();
+    if(event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     return false;
   }
 

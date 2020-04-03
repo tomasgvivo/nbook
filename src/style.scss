@@ -82,17 +82,8 @@ body {
           }
         }
 
-        .status-bar {
-          background-color: #282a36;
-          color: rgb(144,145,148);
-          border-top: 1px solid #44475a;
-          border-bottom-left-radius: 5px;
-          border-bottom-right-radius: 5px;
-          font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
-        }
-
         &.has-error {
-          .status-bar {
+          .monaco-editor {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
           }
@@ -201,4 +192,21 @@ body {
 
 .ace_autocomplete {
   width: 200px !important;
+}
+
+.monaco-editor {
+  border-radius: 5px;
+  overflow: hidden !important;
+  background-color: #282a36 !important;
+
+  .monaco-editor-background,
+  .inputarea.ime-input,
+  .margin {
+    background-color: #282a36 !important;
+  }
+
+  .view-overlays .current-line {
+    border: none !important;
+    background-color: #44475a !important;
+  }
 }

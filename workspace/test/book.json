@@ -6,339 +6,66 @@
   "blocks": [
     {
       "id": "69d83691-f520-4870-9f9f-735f6d112eee",
-      "script": "install('lodash@4.17.14');\ninstall('@nbook/request@0.1.0');\ninstall('@nbook/md@0.1.9');\ninstall('@nbook/plot');\ninstall('@nbook/table');\nasdasd\nvar md = require('@nbook/md');\nvar plot = require('@nbook/plot');\nvar table = require('@nbook/table');",
+      "script": "install(\n  'lodash@4.17.14',\n  '@nbook/request@0.1.0',\n  '@nbook/md@0.1.9',\n  '@nbook/plot',\n  '@nbook/table'\n);\n\nvar md = require('@nbook/md');\nvar plot = require('@nbook/plot');\nvar table = require('@nbook/table');",
       "results": [],
-      "error": null
+      "error": null,
+      "executionCount": 3
     },
     {
       "id": "d1213c58-444b-4445-959d-7d3ff62759f3",
-      "script": "md`\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).\n`",
-      "results": [
-        {
-          "value": {
-            "md": "\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        }
-      ],
-      "error": null
+      "script": "md`\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).asd\n`",
+      "results": [],
+      "error": null,
+      "executionCount": 1
     },
     {
       "id": "7455d6b0-63d3-4695-a5a1-44e36b89ac16",
-      "script": "md`\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\n\nTo output a literal result, use ${md.code('Result.literal()')}.\n\nEx: ${md.code('Result.literal(42);')}\n`\nResult.literal(42);",
-      "results": [
-        {
-          "value": {
-            "md": "\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\n\nTo output a literal result, use `Result.literal()`.\n\nEx: `Result.literal(42);`\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        },
-        {
-          "value": 42,
-          "renderer": "json"
-        }
-      ],
-      "error": null
+      "script": "md`\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\n\nTo output a literal result, use ${md.code('Result.literal()')}.\n\nEx: ${md.code('Result.literal(42);')}\n`\n\nResult.literal(42);",
+      "results": [],
+      "error": null,
+      "executionCount": 2
     },
     {
       "id": "a5f9052f-b16c-486e-b6c1-0d1922d6757d",
-      "script": "md`\n### Markdown\nThere is a very useful package called ${md.code('@nbook/md')}, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n${md.codeBlock(`\n# Markdown Demo\n* List item 1\n* List item 2\n* List item 3\n`)}\n`",
-      "results": [
-        {
-          "value": {
-            "md": "\n### Markdown\nThere is a very useful package called `@nbook/md`, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n```\n# Markdown Demo\n* List item 1\n* List item 2\n* List item 3\n```\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        }
-      ],
-      "error": null
+      "script": "md`\n### Markdown\nThere is a very useful package called ${md.code('@nbook/md')}, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n${md.codeBlock(`\n# Markdown Demoasd\n* List item 1\n* List item 2\n* List item 3\n`)}\n`",
+      "results": [],
+      "error": null,
+      "executionCount": 1
     },
     {
       "id": "54192cd9-be4b-4ced-8245-dbf370f791d4",
       "script": "md`\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports the await keyword for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n`",
-      "results": [
-        {
-          "value": {
-            "md": "\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports the await keyword for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        }
-      ],
-      "error": null
+      "results": [],
+      "error": null,
+      "executionCount": 1
     },
     {
       "id": "dec94d34-27e5-4a38-90a5-4112cb9fa402",
       "script": "const request = require('@nbook/request');\n\nmd`\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package ${md.code(`@nbook/request`)} for making synchronous http requests.\n\nEj: ${md.code(`require('https://jsonplaceholder.typicode.com/todos/1');`)}\n`\n\nResult.literal(request('https://jsonplaceholder.typicode.com/todos/1'));\n\nmd`\nYou can also use any other promise-based http client package.\n`",
-      "results": [
-        {
-          "value": {
-            "md": "\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package `@nbook/request` for making synchronous http requests.\n\nEj: `require('https://jsonplaceholder.typicode.com/todos/1');`\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        },
-        {
-          "value": {
-            "userId": 1,
-            "id": 1,
-            "title": "delectus aut autem",
-            "completed": false
-          },
-          "renderer": "json"
-        },
-        {
-          "value": {
-            "md": "\nYou can also use any other promise-based http client package.\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        }
-      ],
-      "error": null
+      "results": [],
+      "error": null,
+      "executionCount": 2
     },
     {
       "id": "02f36f3b-4b2d-4f16-b416-fa79bf6d2905",
-      "script": "md`\n### Examples\nThe following blocks contain various examples from nbook packages.\n\n---\n`",
-      "results": [
-        {
-          "value": {
-            "md": "\n### Examples\nThe following blocks contain various examples from nbook packages.\n\n---\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        }
-      ],
-      "error": null
+      "script": "md`\n### Examples\nThe following blocks contain variasdous examples from nbook packages.\n\n---\n`",
+      "results": [],
+      "error": null,
+      "executionCount": 1
     },
     {
       "id": "be267a1d-f421-43a8-bdc9-5fda1d9ff2fd",
       "script": "md`\n### Package: ${md.code('@nbook/plot')}\n`\nplot.line({\n  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],\n  datasets: [{\n    label: '# of Votes',\n    data: [12, 19, 3, 5, 2, 3],\n    backgroundColor: [\n      'rgba(255, 99, 132, 0.2)',\n      'rgba(54, 162, 235, 0.2)',\n      'rgba(255, 206, 86, 0.2)',\n      'rgba(75, 192, 192, 0.2)',\n      'rgba(153, 102, 255, 0.2)',\n      'rgba(255, 159, 64, 0.2)'\n    ],\n    borderColor: [\n      'rgba(255, 99, 132, 1)',\n      'rgba(54, 162, 235, 1)',\n      'rgba(255, 206, 86, 1)',\n      'rgba(75, 192, 192, 1)',\n      'rgba(153, 102, 255, 1)',\n      'rgba(255, 159, 64, 1)'\n    ],\n    borderWidth: 1\n  }]\n});",
-      "results": [
-        {
-          "value": {
-            "md": "\n### Package: `@nbook/plot`\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        },
-        {
-          "value": {
-            "type": "line",
-            "data": {
-              "labels": [
-                "Red",
-                "Blue",
-                "Yellow",
-                "Green",
-                "Purple",
-                "Orange"
-              ],
-              "datasets": [
-                {
-                  "label": "# of Votes",
-                  "data": [
-                    12,
-                    19,
-                    3,
-                    5,
-                    2,
-                    3
-                  ],
-                  "backgroundColor": [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(255, 206, 86, 0.2)",
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(153, 102, 255, 0.2)",
-                    "rgba(255, 159, 64, 0.2)"
-                  ],
-                  "borderColor": [
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(54, 162, 235, 1)",
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(153, 102, 255, 1)",
-                    "rgba(255, 159, 64, 1)"
-                  ],
-                  "borderWidth": 1
-                }
-              ]
-            },
-            "options": {}
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/plot/dist/chart.js"
-          }
-        }
-      ],
-      "error": null
+      "results": [],
+      "error": null,
+      "executionCount": 1
     },
     {
       "id": "08aa2176-4203-42f3-90d0-e0cadf0ebfa9",
       "script": "md`\n### Package: ${md.code('@nbook/table')}\n`\n\ntable.from_csv(`\nfirst column,second column,third column\n1,a,1\n2,b,1\n3,c,2\n4,d,3\n5,e,5\n6,f,8\n7,g,13\n8,h,21\n9,i,34\n10,j,55\n11,k,89\n12,l,144\n13,m,233\n14,n,377\n15,o,610\n`);",
-      "results": [
-        {
-          "value": {
-            "md": "\n### Package: `@nbook/table`\n"
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
-            "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
-            ]
-          }
-        },
-        {
-          "value": {
-            "data": [
-              {
-                "first column": "1",
-                "second column": "a",
-                "third column": "1"
-              },
-              {
-                "first column": "2",
-                "second column": "b",
-                "third column": "1"
-              },
-              {
-                "first column": "3",
-                "second column": "c",
-                "third column": "2"
-              },
-              {
-                "first column": "4",
-                "second column": "d",
-                "third column": "3"
-              },
-              {
-                "first column": "5",
-                "second column": "e",
-                "third column": "5"
-              },
-              {
-                "first column": "6",
-                "second column": "f",
-                "third column": "8"
-              },
-              {
-                "first column": "7",
-                "second column": "g",
-                "third column": "13"
-              },
-              {
-                "first column": "8",
-                "second column": "h",
-                "third column": "21"
-              },
-              {
-                "first column": "9",
-                "second column": "i",
-                "third column": "34"
-              },
-              {
-                "first column": "10",
-                "second column": "j",
-                "third column": "55"
-              },
-              {
-                "first column": "11",
-                "second column": "k",
-                "third column": "89"
-              },
-              {
-                "first column": "12",
-                "second column": "l",
-                "third column": "144"
-              },
-              {
-                "first column": "13",
-                "second column": "m",
-                "third column": "233"
-              },
-              {
-                "first column": "14",
-                "second column": "n",
-                "third column": "377"
-              },
-              {
-                "first column": "15",
-                "second column": "o",
-                "third column": "610"
-              }
-            ],
-            "options": {
-              "dense": true,
-              "pagination": true,
-              "paginationRowsPerPageOptions": [
-                10,
-                15,
-                20,
-                25,
-                30,
-                50,
-                100
-              ],
-              "paginationPerPage": 10,
-              "from_csv": {
-                "errors": [],
-                "meta": {
-                  "delimiter": ",",
-                  "linebreak": "\n",
-                  "aborted": false,
-                  "truncated": false,
-                  "cursor": 150,
-                  "fields": [
-                    "first column",
-                    "second column",
-                    "third column"
-                  ]
-                }
-              }
-            }
-          },
-          "renderer": {
-            "path": "lib/node_modules/@nbook/table/dist/table.js"
-          }
-        }
-      ],
-      "error": null
+      "results": [],
+      "error": null,
+      "executionCount": 1
     }
   ]
 }
