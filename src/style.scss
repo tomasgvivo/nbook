@@ -137,6 +137,19 @@ body {
             margin-bottom: 5px;
           }
         }
+
+        .execution-details {
+          font-size: 14px;
+          color: #666666;
+          text-align: right;
+
+          .time {
+            .value {
+            font-family: monospace;
+              display: inline-block;
+            }
+          }
+        }
       }
 
       .result {

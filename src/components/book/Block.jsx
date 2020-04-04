@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import isEqual from 'lodash.isequal';
 import prettyMs from 'pretty-ms';
@@ -61,6 +61,15 @@ export default class Block extends Component {
             { block.error && block.error.stack }
           </pre>
         </details>
+        <div className="execution-details">
+          {
+            typeof block.time === 'number' && (
+              <span className="time">
+                <span className="value">{prettyMs(block.time)}</span> <FontAwesomeIcon icon={faStopwatch} />
+              </span>
+            )
+          }
+        </div>
       </div>
     );
   }

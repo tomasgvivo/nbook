@@ -1,14 +1,53 @@
 const { createContext, runInContext } = require('vm');
 const cloneDeep = require('lodash.clonedeep');
+const cloneDeepWith = require('lodash.clonedeepwith');
 const { createHash } = require('crypto');
 const EventEmitter = require('events');
 const processTopLevelAwait = require('./processTopLevelAwait');
 const Result = require('./Result');
+const Secrets = require('./Secrets');
 
 let cachedContexts = new Map();
 
 const SkipSymbol = Symbol('skip');
 const CancelSymbol = Symbol('cancel');
+const isSecret = Symbol('isSecret');
+
+Secrets.setSymbol(isSecret);
+
+const clone = value => cloneDeepWith(value, value => {
+    if (value && value[isSecret]) {
+        return Secrets.get(value.path);
+    } else {
+        return cloneDeep(value);
+    }
+});
+
+const isCyclic = obj => {
+    const seenObjects = [];
+
+    function detect(obj) {
+        if (!obj || typeof obj !== 'object') {
+            return false;
+        }
+
+        if (seenObjects.includes(obj)) {
+            return true;
+        }
+
+        seenObjects.push(obj);
+
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key) && detect(obj[key])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    return detect(obj);
+}
 
 class Runtime extends EventEmitter {
 
@@ -97,7 +136,8 @@ class Runtime extends EventEmitter {
     }
 
     createOutput(block) {
-        var timeStartedAt = null;
+        let timeStartedAt = null;
+        let context = null;
 
         return {
             stratergy: null,
@@ -118,8 +158,15 @@ class Runtime extends EventEmitter {
             setStratergy(stratergy) {
                 this.stratergy = stratergy;
             },
-            setContext(context) {
-                this.context = cloneDeep(context);
+            setContext(_context) {
+                try {
+                    context = clone(_context);
+                } catch {
+                    throw new Error('Unable to clone context.');
+                }
+            },
+            getContext() {
+                return context;
             },
             setResults(results) {
                 this.results = results;
@@ -131,20 +178,13 @@ class Runtime extends EventEmitter {
                 }
             },
             addResult(result) {
+                if(isCyclic(result.toJSON())) {
+                    throw new Error('Trying to serialize a cyclic result.');
+                }
+
                 this.results.push(result);
             }
         };
-    }
-
-    async run(targetIndex = this.book.blocks.length) {
-        try {
-            return await this.doRun();
-        } catch(error) {
-            if(error === CancelSymbol) {
-                output.setStratergy('cancel');
-                throw error;
-            }
-        }
     }
 
     async run(targetIndex = this.book.blocks.length) {
@@ -161,40 +201,44 @@ class Runtime extends EventEmitter {
         this.emit('progress', { value: progress, index: null, message: 'running' });
 
         for (let index = 0; index < count; index++) {
-            createContext(rollingContext);
-
             const block = this.book.blocks[index];
             const output = this.createOutput(block);
 
-            hash = this.hashBlock(block, hash);
-            this.emit('progress', { value: progress, index: index, message: `running block ${index} (${block.id})` });
+            try {
+                createContext(rollingContext);
 
-            if (!failed && !canceled) {
-                if (this.cachedContexts.has(hash) && index < targetIndex) {
-                    // Use cache if necessary
-                    output.setStratergy('cache');
-                    output.setContext(this.cachedContexts.get(hash));
-                    output.setResults(block.results);
-                    output.setError(block.error);
-                } else if (index <= targetIndex) {
-                    output.increseExecutionCount();
-                    output.startTimer();
-                    await this.runBlock(block, rollingContext, output);
-                    output.stopTimer();
-                }
+                hash = this.hashBlock(block, hash);
+                this.emit('progress', { value: progress, index: index, message: `running block ${index} (${block.id})` });
 
-                if (output.context) {
-                    rollingContext = cloneDeep(output.context);
-                    contexts.set(hash, cloneDeep(output.context));
-                }
+                if (!failed && !canceled) {
+                    if (this.cachedContexts.has(hash) && index < targetIndex) {
+                        // Use cache if necessary
+                        output.setStratergy('cache');
+                        output.setContext(this.cachedContexts.get(hash));
+                        output.setResults(block.results);
+                        output.setError(block.error);
+                    } else if (index <= targetIndex) {
+                        output.increseExecutionCount();
+                        output.startTimer();
+                        await this.runBlock(block, rollingContext, output);
+                        output.stopTimer();
+                    }
 
-                if (output.error) {
-                    failed = true;
+                    if (output.getContext()) {
+                        rollingContext = output.getContext();
+                        contexts.set(hash, output.getContext());
+                    }
                 }
+            } catch (error) {
+                output.setError(error);
+            }
 
-                if (output.stratergy === 'cancel') {
-                    canceled = true;
-                }
+            if (output.error) {
+                failed = true;
+            }
+
+            if (output.stratergy === 'cancel') {
+                canceled = true;
             }
 
             outputs.push(output);
@@ -237,10 +281,10 @@ class Runtime extends EventEmitter {
             output.setContext(rollingContext);
             Result.unsetCollector();
         } catch (error) {
-            if(error === SkipSymbol) {
+            if (error === SkipSymbol) {
                 output.setStratergy('skip');
                 return;
-            } else if(error === CancelSymbol) {
+            } else if (error === CancelSymbol) {
                 output.setStratergy('cancel');
                 return;
             }
@@ -266,6 +310,7 @@ class Runtime extends EventEmitter {
         return {
             install: require('./install'),
             require: require('./require'),
+            Secrets: Secrets,
             Result: Result,
             Runtime: {
                 skip() {

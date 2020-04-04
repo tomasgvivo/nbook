@@ -1,10 +1,18 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Hidden, Divider, IconButton, Grid, Tooltip, LinearProgress } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCode, faSquare, faTrash, faSync, faSave, faPlay, faForward, faBook, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faCode, faSquare, faTrash, faSync, faSave, faPlay, faForward, faBook, faEye, faEyeSlash, faPrint, faStop } from '@fortawesome/free-solid-svg-icons'
 import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
 import ResourceGraph from './ResourceGraph';
 const prettyBytes = require('pretty-bytes');
+
+const Action = ({ title, icon, disabled, onRun, hide }) => hide ? null : (
+    <Tooltip title={title}>
+        <IconButton size="small" style={{ margin: '0.2em' }} disabled={disabled} onClick={() => onRun()}>
+            <FontAwesomeIcon icon={icon} />
+        </IconButton>
+    </Tooltip>
+);
 
 export default ({ title, stats, status, blocks, actions, focus, saved, isCodeHidden, progress }) => {
     return (
@@ -16,38 +24,16 @@ export default ({ title, stats, status, blocks, actions, focus, saved, isCodeHid
                     </Typography>
                     <Divider />
                     <Grid  style={{ display: 'flex', padding: '0em 1em' }}>
-                        <Tooltip title="Save">
-                            <IconButton size="small" style={{ margin: '0.2em' }} onClick={() => actions.save()}>
-                                <FontAwesomeIcon icon={faSave} />
-                            </IconButton>
-                        </Tooltip>
+                        <Action title="Save" icon={faSave} onRun={() => actions.save()} />
                         <Divider orientation="vertical" style={{ margin: '0.2em' }} flexItem />
-                        <Tooltip title="Run">
-                            <IconButton size="small" style={{ margin: '0.2em' }} onClick={() => actions.run(focus)} disabled={status === 'running'}>
-                                <FontAwesomeIcon icon={faPlay} />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Run all">
-                            <IconButton size="small" style={{ margin: '0.2em' }} onClick={() => actions.run()} disabled={status === 'running'}>
-                                <FontAwesomeIcon icon={faForward} />
-                            </IconButton>
-                        </Tooltip>
+                        <Action title="Run" icon={faPlay} onRun={() => actions.run(focus)} disabled={status === 'running'} />
+                        <Action title="Run all" icon={faForward} onRun={() => actions.run()} disabled={status === 'running'} />
+                        <Action title="Stop" icon={faStop} onRun={() => actions.stop()} disabled={status !== 'running'} />
                         <Divider orientation="vertical" style={{ margin: '0.2em' }} flexItem />
-                        {
-                            isCodeHidden ? (
-                                <Tooltip title="Show Code">
-                                    <IconButton size="small" style={{ margin: '0.2em' }} onClick={() => actions.showCode()}>
-                                        <FontAwesomeIcon icon={faEye} />
-                                    </IconButton>
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title="Hide Code">
-                                    <IconButton size="small" style={{ margin: '0.2em' }} onClick={() => actions.hideCode()}>
-                                        <FontAwesomeIcon icon={faEyeSlash} />
-                                    </IconButton>
-                                </Tooltip>
-                            )
-                        }
+                        <Action title="Print" icon={faPrint} onRun={() => window.print()} disabled={status === 'running'} />
+                        <Divider orientation="vertical" style={{ margin: '0.2em' }} flexItem />
+                        <Action title="Show Code" icon={faEye} onRun={() => actions.showCode()} hide={!isCodeHidden} />
+                        <Action title="Hide Code" icon={faEyeSlash} onRun={() => actions.hideCode()} hide={isCodeHidden} />
                     </Grid>
                 </Grid>
                 <Hidden only="xs">
@@ -101,3 +87,4 @@ export default ({ title, stats, status, blocks, actions, focus, saved, isCodeHid
         </AppBar>
     );
 };
+ 

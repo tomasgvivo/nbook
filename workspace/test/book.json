@@ -6,18 +6,18 @@
   "blocks": [
     {
       "id": "69d83691-f520-4870-9f9f-735f6d112eee",
-      "script": "install(\n  'lodash@4.17.14',\n  '@nbook/request@0.1.0',\n  '@nbook/md@0.1.9',\n  '@nbook/plot',\n  '@nbook/table',\n  '@nbook/latex',\n  \"mehicecaca\"\n);\n\nvar md = require('@nbook/md');\nvar plot = require('@nbook/plot');\nvar table = require('@nbook/table');\nvar latex = require('@nbook/latex');",
+      "script": "install(\n  'lodash@4.17.14',\n  '@nbook/request@0.1.0',\n  '@nbook/md@0.1.9',\n  '@nbook/plot',\n  '@nbook/table',\n  '@nbook/latex',\n  'mongodb'\n);\n\nvar md = require('@nbook/md');\nvar plot = require('@nbook/plot');\nvar table = require('@nbook/table');\nvar latex = require('@nbook/latex');\n\nvar { MongoClient } = require('mongodb');",
       "results": [],
       "error": null,
-      "executionCount": 10
+      "executionCount": 38
     },
     {
       "id": "d1213c58-444b-4445-959d-7d3ff62759f3",
-      "script": "md`\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).asd\n`",
+      "script": "md`\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).\n`",
       "results": [
         {
           "value": {
-            "md": "\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).asd\n"
+            "md": "\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -28,7 +28,7 @@
         }
       ],
       "error": null,
-      "executionCount": 4
+      "executionCount": 23
     },
     {
       "id": "7455d6b0-63d3-4695-a5a1-44e36b89ac16",
@@ -51,15 +51,15 @@
         }
       ],
       "error": null,
-      "executionCount": 4
+      "executionCount": 23
     },
     {
       "id": "a5f9052f-b16c-486e-b6c1-0d1922d6757d",
-      "script": "md`\n### Markdown\nThere is a very useful package called ${md.code('@nbook/md')}, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n${md.codeBlock(`\n# Markdown Demoasd\n* List item 1\n* List item 2\n* List item 3\n`)}\n`",
+      "script": "md`\n### Markdown\nThere is a very useful package called ${md.code('@nbook/md')}, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n${md.codeBlock(`\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n`)}\n\nWill produce the following markdown.\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Markdown\nThere is a very useful package called `@nbook/md`, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n```\n# Markdown Demoasd\n* List item 1\n* List item 2\n* List item 3\n```\n"
+            "md": "\n### Markdown\nThere is a very useful package called `@nbook/md`, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n```\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n```\n\nWill produce the following markdown.\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -70,15 +70,15 @@
         }
       ],
       "error": null,
-      "executionCount": 3
+      "executionCount": 43
     },
     {
       "id": "54192cd9-be4b-4ced-8245-dbf370f791d4",
-      "script": "md`\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports the await keyword for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n`",
+      "script": "md`\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports top-level await for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports the await keyword for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n"
+            "md": "\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports top-level await for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -89,15 +89,15 @@
         }
       ],
       "error": null,
-      "executionCount": 3
+      "executionCount": 29
     },
     {
       "id": "dec94d34-27e5-4a38-90a5-4112cb9fa402",
-      "script": "const request = require('@nbook/request');\n\nmd`\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package ${md.code(`@nbook/request`)} for making synchronous http requests.\n\nEj: ${md.code(`require('https://jsonplaceholder.typicode.com/todos/1');`)}\n`\n\nResult.literal(request('https://jsonplaceholder.typicode.com/todos/1'));\n\nmd`\nYou can also use any other promise-based http client package.\n`",
+      "script": "const request = require('@nbook/request');\n\nmd`\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package ${md.code(`@nbook/request`)} for making synchronous http requests.\n\nEj: ${md.code(`require('https://jsonplaceholder.typicode.com/todos/23');`)}\n`\n\nResult.literal(request('https://jsonplaceholder.typicode.com/todos/23'));\n\nmd`\nYou can also use any other promise-based http client package.\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package `@nbook/request` for making synchronous http requests.\n\nEj: `require('https://jsonplaceholder.typicode.com/todos/1');`\n"
+            "md": "\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package `@nbook/request` for making synchronous http requests.\n\nEj: `require('https://jsonplaceholder.typicode.com/todos/23');`\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -108,9 +108,9 @@
         },
         {
           "value": {
-            "userId": 1,
-            "id": 1,
-            "title": "delectus aut autem",
+            "userId": 2,
+            "id": 23,
+            "title": "et itaque necessitatibus maxime molestiae qui quas velit",
             "completed": false
           },
           "renderer": "json"
@@ -128,15 +128,15 @@
         }
       ],
       "error": null,
-      "executionCount": 4
+      "executionCount": 32
     },
     {
       "id": "02f36f3b-4b2d-4f16-b416-fa79bf6d2905",
-      "script": "md`\n### Examples\nThe following blocks contain variasdous examples from nbook packages.\n\n---\n`",
+      "script": "md`\n# Packages examples\n---\nThe following blocks contain various examples from some packages.\n`\n\nvar package = (name, feat = [], description = '') => md`\n### **Package:** [${name}](http://npmjs.com/${name}) ![npm](https://img.shields.io/npm/v/${name})\n\n${ feat.length ? `This packages was built around ${ feat.map(name => `[${name}](http://npmjs.com/${name})`).join(', ') }.` : '' }\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Examples\nThe following blocks contain variasdous examples from nbook packages.\n\n---\n"
+            "md": "\n# Packages examples\n---\nThe following blocks contain various examples from some packages.\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -147,15 +147,15 @@
         }
       ],
       "error": null,
-      "executionCount": 3
+      "executionCount": 39
     },
     {
       "id": "be267a1d-f421-43a8-bdc9-5fda1d9ff2fd",
-      "script": "md`\n### Package: ${md.code('@nbook/plot')}\n`\nplot.line({\n  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],\n  datasets: [{\n    label: '# of Votes',\n    data: [12, 19, 3, 5, 2, 3],\n    backgroundColor: [\n      'rgba(255, 99, 132, 0.2)',\n      'rgba(54, 162, 235, 0.2)',\n      'rgba(255, 206, 86, 0.2)',\n      'rgba(75, 192, 192, 0.2)',\n      'rgba(153, 102, 255, 0.2)',\n      'rgba(255, 159, 64, 0.2)'\n    ],\n    borderColor: [\n      'rgba(255, 99, 132, 1)',\n      'rgba(54, 162, 235, 1)',\n      'rgba(255, 206, 86, 1)',\n      'rgba(75, 192, 192, 1)',\n      'rgba(153, 102, 255, 1)',\n      'rgba(255, 159, 64, 1)'\n    ],\n    borderWidth: 1\n  }]\n});",
+      "script": "package('@nbook/plot', [ 'chart.js' ]);\n\nplot.line({\n  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],\n  datasets: [{\n    label: '# of Votes',\n    data: [12, 19, 3, 5, 2, 3],\n    backgroundColor: [\n      'rgba(255, 99, 132, 0.2)',\n      'rgba(54, 162, 235, 0.2)',\n      'rgba(255, 206, 86, 0.2)',\n      'rgba(75, 192, 192, 0.2)',\n      'rgba(153, 102, 255, 0.2)',\n      'rgba(255, 159, 64, 0.2)'\n    ],\n    borderColor: [\n      'rgba(255, 99, 132, 1)',\n      'rgba(54, 162, 235, 1)',\n      'rgba(255, 206, 86, 1)',\n      'rgba(75, 192, 192, 1)',\n      'rgba(153, 102, 255, 1)',\n      'rgba(255, 159, 64, 1)'\n    ],\n    borderWidth: 1\n  }]\n});",
       "results": [
         {
           "value": {
-            "md": "\n### Package: `@nbook/plot`\n"
+            "md": "\n### **Package:** [@nbook/plot](http://npmjs.com/@nbook/plot) ![npm](https://img.shields.io/npm/v/@nbook/plot)\n\nThis packages was built around [chart.js](http://npmjs.com/chart.js).\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -215,15 +215,15 @@
         }
       ],
       "error": null,
-      "executionCount": 3
+      "executionCount": 40
     },
     {
       "id": "08aa2176-4203-42f3-90d0-e0cadf0ebfa9",
-      "script": "md`\n### Package: ${md.code('@nbook/table')}\n`\n\ntable.from_csv(`\nfirst column,second column,third column\n1,a,1\n2,b,1\n3,c,2\n4,d,3\n5,e,5\n6,f,8\n7,g,13\n8,h,21\n9,i,34\n10,j,55\n11,k,89\n12,l,144\n13,m,233\n14,n,377\n15,o,610\n`);",
+      "script": "package('@nbook/table', [ 'react-data-table-component', 'papaparse' ]);\n\ntable.from_csv(`\nfirst column,second column,third column\n1,a,1\n2,b,1\n3,c,2\n4,d,3\n5,e,5\n6,f,8\n7,g,13\n8,h,21\n9,i,34\n10,j,55\n11,k,89\n12,l,144\n13,m,233\n14,n,377\n15,o,610\n`);",
       "results": [
         {
           "value": {
-            "md": "\n### Package: `@nbook/table`\n"
+            "md": "\n### **Package:** [@nbook/table](http://npmjs.com/@nbook/table) ![npm](https://img.shields.io/npm/v/@nbook/table)\n\nThis packages was built around [react-data-table-component](http://npmjs.com/react-data-table-component), [papaparse](http://npmjs.com/papaparse).\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -347,15 +347,15 @@
         }
       ],
       "error": null,
-      "executionCount": 3
+      "executionCount": 35
     },
     {
       "id": "4598f7da-8724-49c8-823c-57386b54e544",
-      "script": "md`\n### Package: ${md.code('@nbook/latex')}\n`\n\nlatex`\n\\int_0^\\infty x^2 dx\n`",
+      "script": "package('@nbook/latex', [ 'katex' ]);\n\nlatex`\n\\int_0^\\infty x^2 dx\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Package: `@nbook/latex`\n"
+            "md": "\n### **Package:** [@nbook/latex](http://npmjs.com/@nbook/latex) ![npm](https://img.shields.io/npm/v/@nbook/latex)\n\nThis packages was built around [katex](http://npmjs.com/katex).\n"
           },
           "renderer": {
             "path": "lib/node_modules/@nbook/md/dist/md.js",
@@ -375,7 +375,1201 @@
         }
       ],
       "error": null,
-      "executionCount": 2
+      "executionCount": 38
+    },
+    {
+      "id": "8c5dd019-5afa-4629-b9e1-d623468a53d3",
+      "script": "var mongoUrl = Secrets.get('mongoUrl').valueOf();\n\nmd`\n### **Package:** [mongodb](http://npmjs.com/mongodb) ![npm](https://img.shields.io/npm/v/mongodb)\n\nWhen using mongodb, you must open and close the connect in the same block.\n~~~javascript\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\n\n{... make some queries ...}\n\nawait client.close();\n~~~\n\nHere we are using the oficial nodejs mongodb client.\n\nWe will connect to the url ${md.code(mongoUrl)} and fetch and count all documents from the ${md.code('demo')} collection.\n`\n\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\nconst data = await db.collection('demo').find({}).toArray();\nconst count = await db.collection('demo').count({});\n\nmd`\nThere are **${count}** documents in the database.\n`\n\ntable(data);\n\nawait client.close();",
+      "results": [
+        {
+          "value": {
+            "md": "\n### **Package:** [mongodb](http://npmjs.com/mongodb) ![npm](https://img.shields.io/npm/v/mongodb)\n\nWhen using mongodb, you must open and close the connect in the same block.\n~~~javascript\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\n\n{... make some queries ...}\n\nawait client.close();\n~~~\n\nHere we are using the oficial nodejs mongodb client.\n\nWe will connect to the url `mongodb://demo:nbook1@ds363088.mlab.com:63088/nbook-demo` and fetch and count all documents from the `demo` collection.\n"
+          },
+          "renderer": {
+            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "css": [
+              "lib/node_modules/@nbook/md/dist/md.css"
+            ]
+          }
+        },
+        {
+          "value": {
+            "md": "\nThere are **81** documents in the database.\n"
+          },
+          "renderer": {
+            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "css": [
+              "lib/node_modules/@nbook/md/dist/md.css"
+            ]
+          }
+        },
+        {
+          "value": {
+            "data": [
+              {
+                "_id": "5e8803f85951b18f54cd7a6d",
+                "metric_0": 0.41892871687475874,
+                "metric_1": 85,
+                "metric_2": 23,
+                "metric_3": 63,
+                "metric_4": 100,
+                "metric_5": 86,
+                "dimension_1": 4,
+                "dimension_2": 5,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803f95951b18f54cd7a6e",
+                "metric_0": 0.8770459514979521,
+                "metric_1": 76,
+                "metric_2": 70,
+                "metric_3": 88,
+                "metric_4": 79,
+                "metric_5": 61,
+                "dimension_1": 5,
+                "dimension_2": 4,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803f95951b18f54cd7a6f",
+                "metric_0": 0.9171746224063102,
+                "metric_1": 30,
+                "metric_2": 77,
+                "metric_3": 77,
+                "metric_4": 75,
+                "metric_5": 69,
+                "dimension_1": 1,
+                "dimension_2": 2,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803f95951b18f54cd7a70",
+                "metric_0": 0.6232045650816014,
+                "metric_1": 54,
+                "metric_2": 17,
+                "metric_3": 59,
+                "metric_4": 79,
+                "metric_5": 18,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 4,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803fa5951b18f54cd7a71",
+                "metric_0": 0.22969210145851937,
+                "metric_1": 92,
+                "metric_2": 68,
+                "metric_3": 71,
+                "metric_4": 4,
+                "metric_5": 32,
+                "dimension_1": 2,
+                "dimension_2": 4,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803fa5951b18f54cd7a72",
+                "metric_0": 0.13152078337582118,
+                "metric_1": 87,
+                "metric_2": 21,
+                "metric_3": 35,
+                "metric_4": 17,
+                "metric_5": 42,
+                "dimension_1": 3,
+                "dimension_2": 2,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803fb5951b18f54cd7a73",
+                "metric_0": 0.6904811982774931,
+                "metric_1": 48,
+                "metric_2": 77,
+                "metric_3": 66,
+                "metric_4": 86,
+                "metric_5": 26,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803fb5951b18f54cd7a74",
+                "metric_0": 0.7580373651146578,
+                "metric_1": 68,
+                "metric_2": 26,
+                "metric_3": 44,
+                "metric_4": 89,
+                "metric_5": 29,
+                "dimension_1": 2,
+                "dimension_2": 3,
+                "dimension_3": 1,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803fb5951b18f54cd7a75",
+                "metric_0": 0.3147379647593306,
+                "metric_1": 40,
+                "metric_2": 100,
+                "metric_3": 15,
+                "metric_4": 89,
+                "metric_5": 0,
+                "dimension_1": 2,
+                "dimension_2": 1,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803fc5951b18f54cd7a76",
+                "metric_0": 0.33394006410000754,
+                "metric_1": 7,
+                "metric_2": 56,
+                "metric_3": 59,
+                "metric_4": 52,
+                "metric_5": 99,
+                "dimension_1": 1,
+                "dimension_2": 3,
+                "dimension_3": 2,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803fc5951b18f54cd7a77",
+                "metric_0": 0.883428122839759,
+                "metric_1": 92,
+                "metric_2": 81,
+                "metric_3": 69,
+                "metric_4": 2,
+                "metric_5": 77,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803fc5951b18f54cd7a78",
+                "metric_0": 0.15830558430072883,
+                "metric_1": 29,
+                "metric_2": 58,
+                "metric_3": 8,
+                "metric_4": 94,
+                "metric_5": 82,
+                "dimension_1": 3,
+                "dimension_2": 5,
+                "dimension_3": 4,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803fd5951b18f54cd7a79",
+                "metric_0": 0.8767832591037266,
+                "metric_1": 16,
+                "metric_2": 34,
+                "metric_3": 40,
+                "metric_4": 20,
+                "metric_5": 74,
+                "dimension_1": 1,
+                "dimension_2": 4,
+                "dimension_3": 1,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803fd5951b18f54cd7a7a",
+                "metric_0": 0.5605600592949965,
+                "metric_1": 90,
+                "metric_2": 94,
+                "metric_3": 13,
+                "metric_4": 71,
+                "metric_5": 83,
+                "dimension_1": 5,
+                "dimension_2": 1,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803fe5951b18f54cd7a7b",
+                "metric_0": 0.3592068182345035,
+                "metric_1": 12,
+                "metric_2": 82,
+                "metric_3": 40,
+                "metric_4": 62,
+                "metric_5": 87,
+                "dimension_1": 3,
+                "dimension_2": 1,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803fe5951b18f54cd7a7c",
+                "metric_0": 0.10906795812574155,
+                "metric_1": 86,
+                "metric_2": 16,
+                "metric_3": 80,
+                "metric_4": 21,
+                "metric_5": 38,
+                "dimension_1": 4,
+                "dimension_2": 3,
+                "dimension_3": 5,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803fe5951b18f54cd7a7d",
+                "metric_0": 0.13794291642619438,
+                "metric_1": 94,
+                "metric_2": 86,
+                "metric_3": 28,
+                "metric_4": 52,
+                "metric_5": 31,
+                "dimension_1": 5,
+                "dimension_2": 3,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803ff5951b18f54cd7a7e",
+                "metric_0": 0.6766798323380202,
+                "metric_1": 18,
+                "metric_2": 65,
+                "metric_3": 96,
+                "metric_4": 1,
+                "metric_5": 26,
+                "dimension_1": 1,
+                "dimension_2": 4,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8803ff5951b18f54cd7a7f",
+                "metric_0": 0.24354803876879905,
+                "metric_1": 50,
+                "metric_2": 22,
+                "metric_3": 51,
+                "metric_4": 41,
+                "metric_5": 89,
+                "dimension_1": 1,
+                "dimension_2": 2,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8803ff5951b18f54cd7a80",
+                "metric_0": 0.09298698367049052,
+                "metric_1": 35,
+                "metric_2": 86,
+                "metric_3": 55,
+                "metric_4": 95,
+                "metric_5": 30,
+                "dimension_1": 1,
+                "dimension_2": 2,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804005951b18f54cd7a81",
+                "metric_0": 0.384869247476878,
+                "metric_1": 28,
+                "metric_2": 14,
+                "metric_3": 57,
+                "metric_4": 35,
+                "metric_5": 37,
+                "dimension_1": 2,
+                "dimension_2": 4,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804005951b18f54cd7a82",
+                "metric_0": 0.7621099833395195,
+                "metric_1": 17,
+                "metric_2": 32,
+                "metric_3": 34,
+                "metric_4": 6,
+                "metric_5": 46,
+                "dimension_1": 2,
+                "dimension_2": 1,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804015951b18f54cd7a83",
+                "metric_0": 0.7329832520780807,
+                "metric_1": 76,
+                "metric_2": 39,
+                "metric_3": 16,
+                "metric_4": 81,
+                "metric_5": 35,
+                "dimension_1": 1,
+                "dimension_2": 5,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804015951b18f54cd7a84",
+                "metric_0": 0.003154817056378767,
+                "metric_1": 11,
+                "metric_2": 63,
+                "metric_3": 62,
+                "metric_4": 29,
+                "metric_5": 90,
+                "dimension_1": 3,
+                "dimension_2": 2,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804015951b18f54cd7a85",
+                "metric_0": 0.6535060343809151,
+                "metric_1": 77,
+                "metric_2": 5,
+                "metric_3": 85,
+                "metric_4": 83,
+                "metric_5": 29,
+                "dimension_1": 3,
+                "dimension_2": 2,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804025951b18f54cd7a86",
+                "metric_0": 0.021671515214221504,
+                "metric_1": 13,
+                "metric_2": 1,
+                "metric_3": 49,
+                "metric_4": 77,
+                "metric_5": 2,
+                "dimension_1": 4,
+                "dimension_2": 2,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804025951b18f54cd7a87",
+                "metric_0": 0.20203895973528108,
+                "metric_1": 84,
+                "metric_2": 1,
+                "metric_3": 74,
+                "metric_4": 81,
+                "metric_5": 98,
+                "dimension_1": 3,
+                "dimension_2": 3,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804025951b18f54cd7a88",
+                "metric_0": 0.08521659577600982,
+                "metric_1": 41,
+                "metric_2": 71,
+                "metric_3": 84,
+                "metric_4": 23,
+                "metric_5": 69,
+                "dimension_1": 5,
+                "dimension_2": 4,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804035951b18f54cd7a89",
+                "metric_0": 0.8289117809587663,
+                "metric_1": 19,
+                "metric_2": 36,
+                "metric_3": 95,
+                "metric_4": 81,
+                "metric_5": 88,
+                "dimension_1": 5,
+                "dimension_2": 2,
+                "dimension_3": 2,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804035951b18f54cd7a8a",
+                "metric_0": 0.6889775159119433,
+                "metric_1": 29,
+                "metric_2": 91,
+                "metric_3": 27,
+                "metric_4": 34,
+                "metric_5": 96,
+                "dimension_1": 2,
+                "dimension_2": 1,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804045951b18f54cd7a8b",
+                "metric_0": 0.8677652255343445,
+                "metric_1": 18,
+                "metric_2": 73,
+                "metric_3": 99,
+                "metric_4": 33,
+                "metric_5": 26,
+                "dimension_1": 5,
+                "dimension_2": 4,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804045951b18f54cd7a8c",
+                "metric_0": 0.17126824017289288,
+                "metric_1": 86,
+                "metric_2": 82,
+                "metric_3": 48,
+                "metric_4": 28,
+                "metric_5": 90,
+                "dimension_1": 1,
+                "dimension_2": 3,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804045951b18f54cd7a8d",
+                "metric_0": 0.7407942850955276,
+                "metric_1": 23,
+                "metric_2": 85,
+                "metric_3": 89,
+                "metric_4": 50,
+                "metric_5": 76,
+                "dimension_1": 2,
+                "dimension_2": 5,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804055951b18f54cd7a8e",
+                "metric_0": 0.24857862624868732,
+                "metric_1": 23,
+                "metric_2": 32,
+                "metric_3": 34,
+                "metric_4": 94,
+                "metric_5": 8,
+                "dimension_1": 3,
+                "dimension_2": 1,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804055951b18f54cd7a8f",
+                "metric_0": 0.4907254246630457,
+                "metric_1": 54,
+                "metric_2": 81,
+                "metric_3": 59,
+                "metric_4": 49,
+                "metric_5": 17,
+                "dimension_1": 3,
+                "dimension_2": 3,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804055951b18f54cd7a90",
+                "metric_0": 0.4904592976227452,
+                "metric_1": 45,
+                "metric_2": 18,
+                "metric_3": 42,
+                "metric_4": 98,
+                "metric_5": 55,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804065951b18f54cd7a91",
+                "metric_0": 0.7154279734760265,
+                "metric_1": 34,
+                "metric_2": 45,
+                "metric_3": 30,
+                "metric_4": 79,
+                "metric_5": 62,
+                "dimension_1": 2,
+                "dimension_2": 1,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804065951b18f54cd7a92",
+                "metric_0": 0.5006324305476741,
+                "metric_1": 7,
+                "metric_2": 36,
+                "metric_3": 87,
+                "metric_4": 99,
+                "metric_5": 12,
+                "dimension_1": 3,
+                "dimension_2": 3,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804075951b18f54cd7a93",
+                "metric_0": 0.13196837118404814,
+                "metric_1": 11,
+                "metric_2": 91,
+                "metric_3": 67,
+                "metric_4": 42,
+                "metric_5": 83,
+                "dimension_1": 1,
+                "dimension_2": 5,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804075951b18f54cd7a94",
+                "metric_0": 0.8385578407402052,
+                "metric_1": 45,
+                "metric_2": 63,
+                "metric_3": 41,
+                "metric_4": 27,
+                "metric_5": 73,
+                "dimension_1": 1,
+                "dimension_2": 4,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804075951b18f54cd7a95",
+                "metric_0": 0.3591959318592688,
+                "metric_1": 34,
+                "metric_2": 84,
+                "metric_3": 24,
+                "metric_4": 67,
+                "metric_5": 2,
+                "dimension_1": 2,
+                "dimension_2": 2,
+                "dimension_3": 1,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804385951b18f54cd7a96",
+                "metric_0": 0.2688661232449211,
+                "metric_1": 79,
+                "metric_2": 4,
+                "metric_3": 34,
+                "metric_4": 36,
+                "metric_5": 31,
+                "dimension_1": 1,
+                "dimension_2": 1,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804385951b18f54cd7a97",
+                "metric_0": 0.21103130700522843,
+                "metric_1": 20,
+                "metric_2": 95,
+                "metric_3": 29,
+                "metric_4": 7,
+                "metric_5": 16,
+                "dimension_1": 2,
+                "dimension_2": 3,
+                "dimension_3": 5,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804385951b18f54cd7a98",
+                "metric_0": 0.8411721086014463,
+                "metric_1": 8,
+                "metric_2": 18,
+                "metric_3": 35,
+                "metric_4": 44,
+                "metric_5": 86,
+                "dimension_1": 2,
+                "dimension_2": 2,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804395951b18f54cd7a99",
+                "metric_0": 0.5720639129206644,
+                "metric_1": 94,
+                "metric_2": 31,
+                "metric_3": 8,
+                "metric_4": 2,
+                "metric_5": 32,
+                "dimension_1": 1,
+                "dimension_2": 5,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804395951b18f54cd7a9a",
+                "metric_0": 0.634294580320228,
+                "metric_1": 70,
+                "metric_2": 66,
+                "metric_3": 12,
+                "metric_4": 79,
+                "metric_5": 41,
+                "dimension_1": 2,
+                "dimension_2": 1,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043a5951b18f54cd7a9b",
+                "metric_0": 0.6762065771578021,
+                "metric_1": 84,
+                "metric_2": 26,
+                "metric_3": 22,
+                "metric_4": 34,
+                "metric_5": 9,
+                "dimension_1": 4,
+                "dimension_2": 4,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043a5951b18f54cd7a9c",
+                "metric_0": 0.12137882198381267,
+                "metric_1": 79,
+                "metric_2": 9,
+                "metric_3": 40,
+                "metric_4": 52,
+                "metric_5": 34,
+                "dimension_1": 4,
+                "dimension_2": 2,
+                "dimension_3": 5,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043a5951b18f54cd7a9d",
+                "metric_0": 0.7030957601761804,
+                "metric_1": 31,
+                "metric_2": 26,
+                "metric_3": 70,
+                "metric_4": 51,
+                "metric_5": 10,
+                "dimension_1": 4,
+                "dimension_2": 2,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043b5951b18f54cd7a9e",
+                "metric_0": 0.2247567088609902,
+                "metric_1": 63,
+                "metric_2": 48,
+                "metric_3": 4,
+                "metric_4": 90,
+                "metric_5": 41,
+                "dimension_1": 3,
+                "dimension_2": 4,
+                "dimension_3": 1,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043b5951b18f54cd7a9f",
+                "metric_0": 0.9539952305063694,
+                "metric_1": 13,
+                "metric_2": 15,
+                "metric_3": 66,
+                "metric_4": 46,
+                "metric_5": 34,
+                "dimension_1": 5,
+                "dimension_2": 5,
+                "dimension_3": 2,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043c5951b18f54cd7aa0",
+                "metric_0": 0.7506608805548336,
+                "metric_1": 53,
+                "metric_2": 87,
+                "metric_3": 61,
+                "metric_4": 6,
+                "metric_5": 44,
+                "dimension_1": 3,
+                "dimension_2": 2,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043c5951b18f54cd7aa1",
+                "metric_0": 0.5250516686885542,
+                "metric_1": 97,
+                "metric_2": 87,
+                "metric_3": 58,
+                "metric_4": 45,
+                "metric_5": 63,
+                "dimension_1": 5,
+                "dimension_2": 1,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043c5951b18f54cd7aa2",
+                "metric_0": 0.013110433080000039,
+                "metric_1": 19,
+                "metric_2": 53,
+                "metric_3": 22,
+                "metric_4": 10,
+                "metric_5": 74,
+                "dimension_1": 2,
+                "dimension_2": 5,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043d5951b18f54cd7aa3",
+                "metric_0": 0.7187351426467564,
+                "metric_1": 5,
+                "metric_2": 75,
+                "metric_3": 95,
+                "metric_4": 52,
+                "metric_5": 45,
+                "dimension_1": 2,
+                "dimension_2": 2,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043d5951b18f54cd7aa4",
+                "metric_0": 0.641961287065611,
+                "metric_1": 39,
+                "metric_2": 90,
+                "metric_3": 74,
+                "metric_4": 46,
+                "metric_5": 40,
+                "dimension_1": 2,
+                "dimension_2": 2,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043d5951b18f54cd7aa5",
+                "metric_0": 0.8414663028613182,
+                "metric_1": 95,
+                "metric_2": 13,
+                "metric_3": 21,
+                "metric_4": 80,
+                "metric_5": 8,
+                "dimension_1": 4,
+                "dimension_2": 2,
+                "dimension_3": 2,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043e5951b18f54cd7aa6",
+                "metric_0": 0.6277630609757403,
+                "metric_1": 80,
+                "metric_2": 34,
+                "metric_3": 39,
+                "metric_4": 9,
+                "metric_5": 34,
+                "dimension_1": 4,
+                "dimension_2": 4,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e88043e5951b18f54cd7aa7",
+                "metric_0": 0.713781670840774,
+                "metric_1": 80,
+                "metric_2": 71,
+                "metric_3": 74,
+                "metric_4": 63,
+                "metric_5": 3,
+                "dimension_1": 3,
+                "dimension_2": 5,
+                "dimension_3": 5,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043f5951b18f54cd7aa8",
+                "metric_0": 0.8341985095964705,
+                "metric_1": 53,
+                "metric_2": 96,
+                "metric_3": 76,
+                "metric_4": 5,
+                "metric_5": 40,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043f5951b18f54cd7aa9",
+                "metric_0": 0.57773251245847,
+                "metric_1": 73,
+                "metric_2": 73,
+                "metric_3": 88,
+                "metric_4": 7,
+                "metric_5": 80,
+                "dimension_1": 1,
+                "dimension_2": 3,
+                "dimension_3": 2,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e88043f5951b18f54cd7aaa",
+                "metric_0": 0.5685082692606456,
+                "metric_1": 94,
+                "metric_2": 34,
+                "metric_3": 59,
+                "metric_4": 23,
+                "metric_5": 73,
+                "dimension_1": 2,
+                "dimension_2": 4,
+                "dimension_3": 5,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804405951b18f54cd7aab",
+                "metric_0": 0.4221405912012445,
+                "metric_1": 36,
+                "metric_2": 75,
+                "metric_3": 49,
+                "metric_4": 5,
+                "metric_5": 31,
+                "dimension_1": 5,
+                "dimension_2": 5,
+                "dimension_3": 5,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804405951b18f54cd7aac",
+                "metric_0": 0.0024465748638953233,
+                "metric_1": 11,
+                "metric_2": 45,
+                "metric_3": 61,
+                "metric_4": 85,
+                "metric_5": 61,
+                "dimension_1": 4,
+                "dimension_2": 4,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804405951b18f54cd7aad",
+                "metric_0": 0.5986899870049167,
+                "metric_1": 99,
+                "metric_2": 76,
+                "metric_3": 87,
+                "metric_4": 85,
+                "metric_5": 35,
+                "dimension_1": 4,
+                "dimension_2": 4,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804415951b18f54cd7aae",
+                "metric_0": 0.8398172250309562,
+                "metric_1": 72,
+                "metric_2": 40,
+                "metric_3": 82,
+                "metric_4": 12,
+                "metric_5": 3,
+                "dimension_1": 2,
+                "dimension_2": 1,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804415951b18f54cd7aaf",
+                "metric_0": 0.7538975309933518,
+                "metric_1": 21,
+                "metric_2": 55,
+                "metric_3": 93,
+                "metric_4": 31,
+                "metric_5": 25,
+                "dimension_1": 2,
+                "dimension_2": 1,
+                "dimension_3": 2,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804425951b18f54cd7ab0",
+                "metric_0": 0.4200604500530779,
+                "metric_1": 64,
+                "metric_2": 76,
+                "metric_3": 78,
+                "metric_4": 79,
+                "metric_5": 42,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804425951b18f54cd7ab1",
+                "metric_0": 0.08034606162197211,
+                "metric_1": 81,
+                "metric_2": 62,
+                "metric_3": 24,
+                "metric_4": 31,
+                "metric_5": 21,
+                "dimension_1": 3,
+                "dimension_2": 1,
+                "dimension_3": 2,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804425951b18f54cd7ab2",
+                "metric_0": 0.7474865437915303,
+                "metric_1": 24,
+                "metric_2": 89,
+                "metric_3": 64,
+                "metric_4": 67,
+                "metric_5": 34,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804435951b18f54cd7ab3",
+                "metric_0": 0.23301765222339343,
+                "metric_1": 66,
+                "metric_2": 87,
+                "metric_3": 76,
+                "metric_4": 60,
+                "metric_5": 63,
+                "dimension_1": 5,
+                "dimension_2": 1,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804435951b18f54cd7ab4",
+                "metric_0": 0.8055774306577288,
+                "metric_1": 42,
+                "metric_2": 15,
+                "metric_3": 74,
+                "metric_4": 28,
+                "metric_5": 92,
+                "dimension_1": 5,
+                "dimension_2": 3,
+                "dimension_3": 4,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804445951b18f54cd7ab5",
+                "metric_0": 0.5600176262293616,
+                "metric_1": 4,
+                "metric_2": 82,
+                "metric_3": 62,
+                "metric_4": 51,
+                "metric_5": 48,
+                "dimension_1": 2,
+                "dimension_2": 3,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804445951b18f54cd7ab6",
+                "metric_0": 0.9807914859687896,
+                "metric_1": 4,
+                "metric_2": 37,
+                "metric_3": 74,
+                "metric_4": 96,
+                "metric_5": 9,
+                "dimension_1": 5,
+                "dimension_2": 3,
+                "dimension_3": 5,
+                "dimension_4": 1,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804445951b18f54cd7ab7",
+                "metric_0": 0.9003687694332198,
+                "metric_1": 34,
+                "metric_2": 11,
+                "metric_3": 85,
+                "metric_4": 89,
+                "metric_5": 58,
+                "dimension_1": 4,
+                "dimension_2": 1,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804455951b18f54cd7ab8",
+                "metric_0": 0.4578488401234928,
+                "metric_1": 37,
+                "metric_2": 72,
+                "metric_3": 98,
+                "metric_4": 94,
+                "metric_5": 1,
+                "dimension_1": 5,
+                "dimension_2": 4,
+                "dimension_3": 4,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804455951b18f54cd7ab9",
+                "metric_0": 0.089476285116176,
+                "metric_1": 52,
+                "metric_2": 92,
+                "metric_3": 91,
+                "metric_4": 1,
+                "metric_5": 91,
+                "dimension_1": 3,
+                "dimension_2": 5,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804455951b18f54cd7aba",
+                "metric_0": 0.6823419473329116,
+                "metric_1": 15,
+                "metric_2": 58,
+                "metric_3": 73,
+                "metric_4": 21,
+                "metric_5": 64,
+                "dimension_1": 1,
+                "dimension_2": 3,
+                "dimension_3": 3,
+                "dimension_4": 2,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804465951b18f54cd7abb",
+                "metric_0": 0.985218482234001,
+                "metric_1": 24,
+                "metric_2": 8,
+                "metric_3": 86,
+                "metric_4": 49,
+                "metric_5": 70,
+                "dimension_1": 2,
+                "dimension_2": 4,
+                "dimension_3": 3,
+                "dimension_4": 1,
+                "dimension_5": 1
+              },
+              {
+                "_id": "5e8804465951b18f54cd7abc",
+                "metric_0": 0.6123535044962751,
+                "metric_1": 69,
+                "metric_2": 53,
+                "metric_3": 62,
+                "metric_4": 67,
+                "metric_5": 52,
+                "dimension_1": 1,
+                "dimension_2": 5,
+                "dimension_3": 2,
+                "dimension_4": 2,
+                "dimension_5": 2
+              },
+              {
+                "_id": "5e8804475951b18f54cd7abd",
+                "metric_0": 0.40825993090765844,
+                "metric_1": 80,
+                "metric_2": 99,
+                "metric_3": 47,
+                "metric_4": 74,
+                "metric_5": 99,
+                "dimension_1": 1,
+                "dimension_2": 3,
+                "dimension_3": 1,
+                "dimension_4": 2,
+                "dimension_5": 2
+              }
+            ],
+            "options": {
+              "dense": true,
+              "pagination": false,
+              "paginationRowsPerPageOptions": [
+                10,
+                15,
+                20,
+                25,
+                30,
+                50,
+                100
+              ],
+              "paginationPerPage": 10
+            }
+          },
+          "renderer": {
+            "path": "lib/node_modules/@nbook/table/dist/table.js"
+          }
+        }
+      ],
+      "error": null,
+      "executionCount": 45
+    },
+    {
+      "id": "223289a2-624d-48f4-87d2-096899b6499e",
+      "script": "\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\nconst count = await db.collection('demo').count({});\n\nResult.literal(count)\n\nawait client.close();",
+      "results": [],
+      "error": null,
+      "executionCount": 7
     }
   ]
 }
