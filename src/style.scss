@@ -83,7 +83,7 @@ body {
         }
 
         &.has-error {
-          .monaco-editor {
+          .monaco-editor .overflow-guard {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
           }
@@ -195,9 +195,12 @@ body {
 }
 
 .monaco-editor {
-  border-radius: 5px;
-  overflow: hidden !important;
-  background-color: #282a36 !important;
+  background-color: transparent !important;
+
+  .overflow-guard {
+    border-radius: 5px;
+    background-color: #282a36 !important;
+  }
 
   .monaco-editor-background,
   .inputarea.ime-input,

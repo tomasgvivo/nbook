@@ -7,6 +7,9 @@ const Result = require('./Result');
 
 let cachedContexts = new Map();
 
+const SkipSymbol = Symbol('skip');
+const CancelSymbol = Symbol('cancel');
+
 class Runtime extends EventEmitter {
 
     static main() {
@@ -134,12 +137,24 @@ class Runtime extends EventEmitter {
     }
 
     async run(targetIndex = this.book.blocks.length) {
+        try {
+            return await this.doRun();
+        } catch(error) {
+            if(error === CancelSymbol) {
+                output.setStratergy('cancel');
+                throw error;
+            }
+        }
+    }
+
+    async run(targetIndex = this.book.blocks.length) {
         const contexts = new Map();
         const outputs = [];
         const count = this.book.blocks.length;
 
         let rollingContext = this.baseContext;
         let failed = false;
+        let canceled = false;
         let hash = '';
         let progress = 0;
 
@@ -154,7 +169,7 @@ class Runtime extends EventEmitter {
             hash = this.hashBlock(block, hash);
             this.emit('progress', { value: progress, index: index, message: `running block ${index} (${block.id})` });
 
-            if (!failed) {
+            if (!failed && !canceled) {
                 if (this.cachedContexts.has(hash) && index < targetIndex) {
                     // Use cache if necessary
                     output.setStratergy('cache');
@@ -175,6 +190,10 @@ class Runtime extends EventEmitter {
 
                 if (output.error) {
                     failed = true;
+                }
+
+                if (output.stratergy === 'cancel') {
+                    canceled = true;
                 }
             }
 
@@ -218,6 +237,14 @@ class Runtime extends EventEmitter {
             output.setContext(rollingContext);
             Result.unsetCollector();
         } catch (error) {
+            if(error === SkipSymbol) {
+                output.setStratergy('skip');
+                return;
+            } else if(error === CancelSymbol) {
+                output.setStratergy('cancel');
+                return;
+            }
+
             const parsedStack = (
                 error.stack.match(/evalmachine.*:(\d{1,}):(\d{1,})/) ||
                 error.stack.match(/evalmachine.*:(\d{1,})/) ||
@@ -239,8 +266,15 @@ class Runtime extends EventEmitter {
         return {
             install: require('./install'),
             require: require('./require'),
-            setTimeout: setTimeout,
-            Result: Result
+            Result: Result,
+            Runtime: {
+                skip() {
+                    throw SkipSymbol;
+                },
+                cancel() {
+                    throw CancelSymbol;
+                }
+            }
         };
     }
 

@@ -7,17 +7,21 @@ import Hotkeys from 'react-hot-keys';
 import io from 'socket.io-client';
 const patch = require('socketio-wildcard')(io.Manager);
 
-export default withRouter(class Book extends Component {
+const BlocksContext = React.createContext();
+
+
+
+export default withRouter(class BookController extends Component {
 
   get initialState() {
     return {
       sessionId: null,
       book: {
-        stats: {
-          current: {},
-          histogram: []
-        },
         blocks: []
+      },
+      stats: {
+        current: {},
+        histogram: []
       },
       isCodeHidden: false
     };
@@ -121,11 +125,11 @@ export default withRouter(class Book extends Component {
         return;
       }
 
-      let histogram = [...this.state.book.stats.histogram, current];
+      let histogram = [...this.state.stats.histogram, current];
       histogram = histogram.slice(Math.max(histogram.length - 100, 0))
 
       this.setState({
-        book: { ...this.state.book, stats: { current, histogram } }
+        stats: { current, histogram }
       });
     });
 
@@ -238,7 +242,7 @@ export default withRouter(class Book extends Component {
         onKeyDown={this.onKeyDown.bind(this)}
       >
         <Prompt when={!this.state.book.saved} message="You have unsaved changes, are you sure you want to leave?" />
-        <AppBar {...this.getContext()}/>
+        <AppBar {...this.getContext()} stats={this.state.stats}/>
         <Content {...this.getContext()} />
       </Hotkeys>
     );

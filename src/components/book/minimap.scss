@@ -1,6 +1,7 @@
 .minimap {
     height: calc(100vh - 145px) !important;
     background-color: rgba(0,0,0,0.05);
+    pointer-events: none;
     position: fixed;
     top: 146px;
     right: 0;
@@ -8,11 +9,11 @@
     @media (max-width: 1630px) {
         display: none;
     }
-    
+
     @media print {
         display: none;
     }
-      
+
     .minimap-node {
         opacity: 0.9;
         pointer-events: none;
