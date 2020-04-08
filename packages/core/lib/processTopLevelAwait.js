@@ -27,7 +27,7 @@ const visitorsWithoutAncestors = {
   },
   VariableDeclaration(node, state, c) {
     if(node.kind === 'const' || node.kind === 'let') {
-      return;
+      walk.base.VariableDeclaration(node, state, c);;
     }
 
     if (node.kind === 'var' || state.ancestors[state.ancestors.length - 2] === state.body) {

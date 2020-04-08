@@ -1,14 +1,9 @@
 const { execSync } = require('child_process');
 const path = require('path');
 const npm_bin = path.resolve(require.resolve('npm'), '../../bin/npm-cli.js');
-const rootDir = process.cwd();
 const contextRequire = require('./require');
 const semver = require('semver');
-
 const parsePackageName = require('./parsePackageName');
-
-const Path = require('path');
-const paths = [ Path.join(process.cwd(), 'lib', 'node_modules') ];
 
 class InstallError {
     constructor(output) {
@@ -29,11 +24,6 @@ class InstallError {
 }
 
 module.exports = (...packages) => {
-    const packageFullNames = packages.map(package => {
-        const { name, version } = parsePackageName(package);
-        return `${name}${version && '@'}${version}`;
-    });
-
     const packagesToInstall = [];
 
     for(let package of packages) {
@@ -50,11 +40,11 @@ module.exports = (...packages) => {
 
     try {
         const result = execSync(`node ${npm_bin} install ${packagesToInstall.join(' ')}`, {
-            cwd: rootDir,
+            cwd: process.cwd(),
             env: {
                 NPM_CONFIG_JSON: true,
                 NPM_CONFIG_GLOBAL: true,
-                NPM_CONFIG_PREFIX: rootDir
+                NPM_CONFIG_PREFIX: process.cwd()
             }
         });
 

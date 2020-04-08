@@ -6,10 +6,11 @@
   "blocks": [
     {
       "id": "69d83691-f520-4870-9f9f-735f6d112eee",
-      "script": "install(\n  'lodash@4.17.14',\n  '@nbook/request@0.1.0',\n  '@nbook/md@0.1.9',\n  '@nbook/plot',\n  '@nbook/table',\n  '@nbook/latex',\n  'mongodb'\n);\n\nvar md = require('@nbook/md');\nvar plot = require('@nbook/plot');\nvar table = require('@nbook/table');\nvar latex = require('@nbook/latex');\n\nvar { MongoClient } = require('mongodb');",
+      "script": "install(\n  'lodash@4.17.14',\n  '@nbook/request@0.1.0',\n  '@nbook/md@0.1.9',\n  '@nbook/plot',\n  '@nbook/table',\n  '@nbook/latex',\n  'mongodb'\n);\n\nvar md = require('@nbook/md');\nvar plot = require('@nbook/plot');\nvar table = require('@nbook/table');\nvar latex = require('@nbook/latex');\nvar request = require('@nbook/request');",
       "results": [],
       "error": null,
-      "executionCount": 38
+      "executionCount": 58,
+      "options": {}
     },
     {
       "id": "d1213c58-444b-4445-959d-7d3ff62759f3",
@@ -20,57 +21,179 @@
             "md": "\n# Demo Notebook\n\nNBook notebooks are processed two times.\n\n 1. For running (backend).\n 2. For Rendering (frontend).\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         }
       ],
       "error": null,
-      "executionCount": 23
+      "executionCount": 43,
+      "options": {}
     },
     {
-      "id": "7455d6b0-63d3-4695-a5a1-44e36b89ac16",
-      "script": "md`\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\n\nTo output a literal result, use ${md.code('Result.literal()')}.\n\nEx: ${md.code('Result.literal(42);')}\n`\n\nResult.literal(42);",
+      "id": "711cc45c-1e43-48a7-aa87-523137dd19c6",
+      "script": "md`\n### Blocks\n\nBlocks are code units that run on the backend and can generate results that are rendered on the frontend.\n\nThis is an example of a block generating\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\n\nTo output a literal result, use `Result.literal()`.\n\nEx: `Result.literal(42);`\n"
+            "md": "\n### Blocks\n\nBlocks are code units that run on the backend and can generate results that are rendered on the frontend.\n\nThis is an example of a block generating\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
-        },
+        }
+      ],
+      "error": null,
+      "executionCount": 9,
+      "options": {}
+    },
+    {
+      "id": "79403f9a-9fa1-4bd7-aad5-f31ee082918f",
+      "script": "let message = \"This is the block example.\";\n\nif(message) {\n  message += \" And this block will execute on the backend (nodejs)\";\n}",
+      "results": [],
+      "error": null,
+      "executionCount": 9,
+      "options": {
+        "showSource": true,
+        "isLocked": false,
+        "noCache": false,
+        "canFail": false,
+        "noContext": false
+      }
+    },
+    {
+      "id": "7455d6b0-63d3-4695-a5a1-44e36b89ac16",
+      "script": "md`\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\n\nTo output a literal result, use ${md.code('Result.literal()')}.\n\nEx:\n`",
+      "results": [
+        {
+          "value": {
+            "md": "\n### Results\n\nWhen running a notebook, results may be generated for each block. These results are then passed to the frontend to be rendered.\nNBook-specific packages can create custom results. And NBook-specific frontend packages can try to understand these results and render them.\n\nTo output a literal result, use `Result.literal()`.\n\nEx:\n"
+          },
+          "renderer": {
+            "path": "node_modules/@nbook/md/dist/md.js",
+            "css": [
+              "node_modules/@nbook/md/dist/md.css"
+            ]
+          }
+        }
+      ],
+      "error": null,
+      "executionCount": 43,
+      "options": {}
+    },
+    {
+      "id": "9a470380-7277-444e-aa0f-736a02ea2601",
+      "script": "Result.literal(42);",
+      "results": [
         {
           "value": 42,
           "renderer": "json"
         }
       ],
       "error": null,
-      "executionCount": 23
+      "executionCount": 20,
+      "options": {
+        "showSource": true,
+        "noContext": false
+      }
     },
     {
-      "id": "a5f9052f-b16c-486e-b6c1-0d1922d6757d",
-      "script": "md`\n### Markdown\nThere is a very useful package called ${md.code('@nbook/md')}, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n${md.codeBlock(`\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n`)}\n\nWill produce the following markdown.\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n`",
+      "id": "247f57af-0642-4288-8d61-0072694cb735",
+      "script": "md`\n### Context and Variables\n\nAll blocks share the same context, sharing variables between them in a lineal way (1).\n\nIf a variable is declared in a block, the next block can access it. But not the previeus.\n\nThere are multiple ways to declare variables in javascript, but variables declared with ${md.code('const')} or ${md.code('let')} are only available in the current block.\n\n1. there are ways to disable sharing context on specified blocks.\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Markdown\nThere is a very useful package called `@nbook/md`, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n```\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n```\n\nWill produce the following markdown.\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n"
+            "md": "\n### Context and Variables\n\nAll blocks share the same context, sharing variables between them in a lineal way (1).\n\nIf a variable is declared in a block, the next block can access it. But not the previeus.\n\nThere are multiple ways to declare variables in javascript, but variables declared with `const` or `let` are only available in the current block.\n\n1. there are ways to disable sharing context on specified blocks.\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         }
       ],
       "error": null,
-      "executionCount": 43
+      "executionCount": 9,
+      "options": {}
+    },
+    {
+      "id": "73d4ee9e-71e2-43ec-80b8-ec5cb437aa2a",
+      "script": "md`\n### Packages\nYou can install and use most nodejs packages found in [npm](https://npmjs.com/).\nThere are also some [@nbook](https://www.npmjs.com/search?q=%40nbook) specific packages.\nOnce a package is installed, you must require it to be able to use it.\n`",
+      "results": [
+        {
+          "value": {
+            "md": "\n### Packages\nYou can install and use most nodejs packages found in [npm](https://npmjs.com/).\nThere are also some [@nbook](https://www.npmjs.com/search?q=%40nbook) specific packages.\nOnce a package is installed, you must require it to be able to use it.\n"
+          },
+          "renderer": {
+            "path": "node_modules/@nbook/md/dist/md.js",
+            "css": [
+              "node_modules/@nbook/md/dist/md.css"
+            ]
+          }
+        }
+      ],
+      "error": null,
+      "executionCount": 9,
+      "options": {}
+    },
+    {
+      "id": "c44b496c-2b2d-4855-a8fb-4d4338f64d4c",
+      "script": "install('@nbook/md@0.1.9');\nvar md = require('@nbook/md');",
+      "results": [],
+      "error": null,
+      "executionCount": 8,
+      "options": {
+        "showSource": true,
+        "noContext": true
+      }
+    },
+    {
+      "id": "a5f9052f-b16c-486e-b6c1-0d1922d6757d",
+      "script": "md`\n### Markdown\nThere is a very useful package called ${md.code('@nbook/md')}, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n`",
+      "results": [
+        {
+          "value": {
+            "md": "\n### Markdown\nThere is a very useful package called `@nbook/md`, a template literal tag that generates markdown a result.\nThis can be used to write documents on your notebook. In fact, you are reading a markdown result right now!\n\nEx:\n"
+          },
+          "renderer": {
+            "path": "node_modules/@nbook/md/dist/md.js",
+            "css": [
+              "node_modules/@nbook/md/dist/md.css"
+            ]
+          }
+        }
+      ],
+      "error": null,
+      "executionCount": 59,
+      "options": {}
+    },
+    {
+      "id": "c1cf16df-e16a-4c1a-8709-5a27ff9971a5",
+      "script": "md`\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n`",
+      "results": [
+        {
+          "value": {
+            "md": "\n###### **Markdown Demo**\n* List item 1\n* List item 2\n* List item 3\n"
+          },
+          "renderer": {
+            "path": "node_modules/@nbook/md/dist/md.js",
+            "css": [
+              "node_modules/@nbook/md/dist/md.css"
+            ]
+          }
+        }
+      ],
+      "error": null,
+      "executionCount": 15,
+      "options": {
+        "showSource": true
+      }
     },
     {
       "id": "54192cd9-be4b-4ced-8245-dbf370f791d4",
@@ -81,31 +204,41 @@
             "md": "\n### Synchronous vs Asynchronous\nThis is a delicate subject...\nThe power of Node.js rests on two key features:\n* Event-driven with event loop.\n* IO calls are handled asynchronously (promises, callbacks, etc).\n\nEvents don't make much sense in a notebook workflow. Neither do asynchronous calls, but these can be useful given most IO-dependent libraries uses them.\nNBook supports top-level await for awaiting promises, but keep in minde that we are using a different parser for blocks containing awaits and this can bring unexpected behaviors.\n\nWe do not recomend using asynchronous callbacks and events in nbook.\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         }
       ],
       "error": null,
-      "executionCount": 29
+      "executionCount": 45,
+      "options": {}
     },
     {
       "id": "dec94d34-27e5-4a38-90a5-4112cb9fa402",
-      "script": "const request = require('@nbook/request');\n\nmd`\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package ${md.code(`@nbook/request`)} for making synchronous http requests.\n\nEj: ${md.code(`require('https://jsonplaceholder.typicode.com/todos/23');`)}\n`\n\nResult.literal(request('https://jsonplaceholder.typicode.com/todos/23'));\n\nmd`\nYou can also use any other promise-based http client package.\n`",
+      "script": "const request = require('@nbook/request');\n\nmd`\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package ${md.code(`@nbook/request`)} for making synchronous http requests.\n\nEx:\n`",
       "results": [
         {
           "value": {
-            "md": "\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package `@nbook/request` for making synchronous http requests.\n\nEj: `require('https://jsonplaceholder.typicode.com/todos/23');`\n"
+            "md": "\n### Making http requests\n\nAs discused before, nbook does't support asynchronous calls.\nSo we provide the package `@nbook/request` for making synchronous http requests.\n\nEx:\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
-        },
+        }
+      ],
+      "error": null,
+      "executionCount": 48,
+      "options": {}
+    },
+    {
+      "id": "9726ba9e-140f-4f07-8a21-8fd101c58293",
+      "script": "const responseBody = request('https://jsonplaceholder.typicode.com/todos/23');\nResult.literal(responseBody);",
+      "results": [
         {
           "value": {
             "userId": 2,
@@ -114,53 +247,86 @@
             "completed": false
           },
           "renderer": "json"
-        },
+        }
+      ],
+      "error": null,
+      "executionCount": 14,
+      "options": {
+        "showSource": true
+      }
+    },
+    {
+      "id": "d34457c3-3ac0-4ffa-826e-c903e18dcdff",
+      "script": "md`\nYou can also use any other promise-based http client package.\n`",
+      "results": [
         {
           "value": {
             "md": "\nYou can also use any other promise-based http client package.\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         }
       ],
       "error": null,
-      "executionCount": 32
+      "executionCount": 12,
+      "options": {}
     },
     {
       "id": "02f36f3b-4b2d-4f16-b416-fa79bf6d2905",
-      "script": "md`\n# Packages examples\n---\nThe following blocks contain various examples from some packages.\n`\n\nvar package = (name, feat = [], description = '') => md`\n### **Package:** [${name}](http://npmjs.com/${name}) ![npm](https://img.shields.io/npm/v/${name})\n\n${ feat.length ? `This packages was built around ${ feat.map(name => `[${name}](http://npmjs.com/${name})`).join(', ') }.` : '' }\n`",
+      "script": "md`\n# Packages examples\n\nThe following blocks contain various examples from some packages.\n`\n\nvar package = (name, feat = [], description = '') => md`\n### **Package:** [${name}](http://npmjs.com/${name}) ![npm](https://img.shields.io/npm/v/${name})\n\n${ feat.length ? `This packages was built around ${ feat.map(name => `[${name}](http://npmjs.com/${name})`).join(', ') }.` : '' }\n\n${description}\n`",
       "results": [
         {
           "value": {
-            "md": "\n# Packages examples\n---\nThe following blocks contain various examples from some packages.\n"
+            "md": "\n# Packages examples\n\nThe following blocks contain various examples from some packages.\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         }
       ],
       "error": null,
-      "executionCount": 39
+      "executionCount": 52,
+      "options": {}
     },
     {
       "id": "be267a1d-f421-43a8-bdc9-5fda1d9ff2fd",
+      "script": "package('@nbook/md', []);\n",
+      "results": [
+        {
+          "value": {
+            "md": "\n### **Package:** [@nbook/md](http://npmjs.com/@nbook/md) ![npm](https://img.shields.io/npm/v/@nbook/md)\n\n\n\n\n"
+          },
+          "renderer": {
+            "path": "node_modules/@nbook/md/dist/md.js",
+            "css": [
+              "node_modules/@nbook/md/dist/md.css"
+            ]
+          }
+        }
+      ],
+      "error": null,
+      "executionCount": 53,
+      "options": {}
+    },
+    {
+      "id": "55201e90-5a01-46aa-b09e-6cd0a43a9a91",
       "script": "package('@nbook/plot', [ 'chart.js' ]);\n\nplot.line({\n  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],\n  datasets: [{\n    label: '# of Votes',\n    data: [12, 19, 3, 5, 2, 3],\n    backgroundColor: [\n      'rgba(255, 99, 132, 0.2)',\n      'rgba(54, 162, 235, 0.2)',\n      'rgba(255, 206, 86, 0.2)',\n      'rgba(75, 192, 192, 0.2)',\n      'rgba(153, 102, 255, 0.2)',\n      'rgba(255, 159, 64, 0.2)'\n    ],\n    borderColor: [\n      'rgba(255, 99, 132, 1)',\n      'rgba(54, 162, 235, 1)',\n      'rgba(255, 206, 86, 1)',\n      'rgba(75, 192, 192, 1)',\n      'rgba(153, 102, 255, 1)',\n      'rgba(255, 159, 64, 1)'\n    ],\n    borderWidth: 1\n  }]\n});",
       "results": [
         {
           "value": {
-            "md": "\n### **Package:** [@nbook/plot](http://npmjs.com/@nbook/plot) ![npm](https://img.shields.io/npm/v/@nbook/plot)\n\nThis packages was built around [chart.js](http://npmjs.com/chart.js).\n"
+            "md": "\n### **Package:** [@nbook/plot](http://npmjs.com/@nbook/plot) ![npm](https://img.shields.io/npm/v/@nbook/plot)\n\nThis packages was built around [chart.js](http://npmjs.com/chart.js).\n\n\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         },
@@ -210,12 +376,13 @@
             "options": {}
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/plot/dist/chart.js"
+            "path": "node_modules/@nbook/plot/dist/chart.js"
           }
         }
       ],
       "error": null,
-      "executionCount": 40
+      "executionCount": 5,
+      "options": {}
     },
     {
       "id": "08aa2176-4203-42f3-90d0-e0cadf0ebfa9",
@@ -223,12 +390,12 @@
       "results": [
         {
           "value": {
-            "md": "\n### **Package:** [@nbook/table](http://npmjs.com/@nbook/table) ![npm](https://img.shields.io/npm/v/@nbook/table)\n\nThis packages was built around [react-data-table-component](http://npmjs.com/react-data-table-component), [papaparse](http://npmjs.com/papaparse).\n"
+            "md": "\n### **Package:** [@nbook/table](http://npmjs.com/@nbook/table) ![npm](https://img.shields.io/npm/v/@nbook/table)\n\nThis packages was built around [react-data-table-component](http://npmjs.com/react-data-table-component), [papaparse](http://npmjs.com/papaparse).\n\n\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         },
@@ -342,12 +509,13 @@
             }
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/table/dist/table.js"
+            "path": "node_modules/@nbook/table/dist/table.js"
           }
         }
       ],
       "error": null,
-      "executionCount": 35
+      "executionCount": 47,
+      "options": {}
     },
     {
       "id": "4598f7da-8724-49c8-823c-57386b54e544",
@@ -355,51 +523,61 @@
       "results": [
         {
           "value": {
-            "md": "\n### **Package:** [@nbook/latex](http://npmjs.com/@nbook/latex) ![npm](https://img.shields.io/npm/v/@nbook/latex)\n\nThis packages was built around [katex](http://npmjs.com/katex).\n"
+            "md": "\n### **Package:** [@nbook/latex](http://npmjs.com/@nbook/latex) ![npm](https://img.shields.io/npm/v/@nbook/latex)\n\nThis packages was built around [katex](http://npmjs.com/katex).\n\n\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         },
         {
           "value": "\n\\int_0^\\infty x^2 dx\n",
           "renderer": {
-            "path": "lib/node_modules/@nbook/latex/dist/latex.js",
+            "path": "node_modules/@nbook/latex/dist/latex.js",
             "css": [
-              "lib/node_modules/@nbook/latex/dist/latex.css"
+              "node_modules/@nbook/latex/dist/latex.css"
             ]
           }
         }
       ],
       "error": null,
-      "executionCount": 38
+      "executionCount": 50,
+      "options": {}
     },
     {
       "id": "8c5dd019-5afa-4629-b9e1-d623468a53d3",
-      "script": "var mongoUrl = Secrets.get('mongoUrl').valueOf();\n\nmd`\n### **Package:** [mongodb](http://npmjs.com/mongodb) ![npm](https://img.shields.io/npm/v/mongodb)\n\nWhen using mongodb, you must open and close the connect in the same block.\n~~~javascript\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\n\n{... make some queries ...}\n\nawait client.close();\n~~~\n\nHere we are using the oficial nodejs mongodb client.\n\nWe will connect to the url ${md.code(mongoUrl)} and fetch and count all documents from the ${md.code('demo')} collection.\n`\n\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\nconst data = await db.collection('demo').find({}).toArray();\nconst count = await db.collection('demo').count({});\n\nmd`\nThere are **${count}** documents in the database.\n`\n\ntable(data);\n\nawait client.close();",
+      "script": "package('mongodb', [], `\nWhen using mongodb, you must open and close the connect in the same block.\n~~~javascript\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\n\n{... make some queries ...}\n\nawait client.close();\n~~~\n\nHere we are using the oficial nodejs mongodb client.\n\nWe will connect to a mongodb server and fetch and count all documents from the ${md.code('demo')} collection.\n`);",
       "results": [
         {
           "value": {
-            "md": "\n### **Package:** [mongodb](http://npmjs.com/mongodb) ![npm](https://img.shields.io/npm/v/mongodb)\n\nWhen using mongodb, you must open and close the connect in the same block.\n~~~javascript\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\n\n{... make some queries ...}\n\nawait client.close();\n~~~\n\nHere we are using the oficial nodejs mongodb client.\n\nWe will connect to the url `mongodb://demo:nbook1@ds363088.mlab.com:63088/nbook-demo` and fetch and count all documents from the `demo` collection.\n"
+            "md": "\n### **Package:** [mongodb](http://npmjs.com/mongodb) ![npm](https://img.shields.io/npm/v/mongodb)\n\n\n\n\nWhen using mongodb, you must open and close the connect in the same block.\n~~~javascript\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\n\n{... make some queries ...}\n\nawait client.close();\n~~~\n\nHere we are using the oficial nodejs mongodb client.\n\nWe will connect to a mongodb server and fetch and count all documents from the `demo` collection.\n\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
-        },
+        }
+      ],
+      "error": null,
+      "executionCount": 57,
+      "options": {}
+    },
+    {
+      "id": "adcd0a1d-37b9-4b9b-b7df-8d100eff480e",
+      "script": "const { MongoClient } = require('mongodb');\nconst mongoUrl = Secrets.get('mongoUrl').valueOf();\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\nconst data = await db.collection('demo').find({}).toArray();\nconst count = await db.collection('demo').count({});\n\nmd`\nThere are **${count}** documents in the ${md.code('demo')} collection.\n`\n\ntable(data);\n\nawait client.close();",
+      "results": [
         {
           "value": {
             "md": "\nThere are **81** documents in the database.\n"
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/md/dist/md.js",
+            "path": "node_modules/@nbook/md/dist/md.js",
             "css": [
-              "lib/node_modules/@nbook/md/dist/md.css"
+              "node_modules/@nbook/md/dist/md.css"
             ]
           }
         },
@@ -1543,7 +1721,7 @@
             ],
             "options": {
               "dense": true,
-              "pagination": false,
+              "pagination": true,
               "paginationRowsPerPageOptions": [
                 10,
                 15,
@@ -1557,19 +1735,16 @@
             }
           },
           "renderer": {
-            "path": "lib/node_modules/@nbook/table/dist/table.js"
+            "path": "node_modules/@nbook/table/dist/table.js"
           }
         }
       ],
       "error": null,
-      "executionCount": 45
-    },
-    {
-      "id": "223289a2-624d-48f4-87d2-096899b6499e",
-      "script": "\nconst client = new MongoClient(mongoUrl);\nawait client.connect();\nconst db = client.db('nbook-demo');\nconst count = await db.collection('demo').count({});\n\nResult.literal(count)\n\nawait client.close();",
-      "results": [],
-      "error": null,
-      "executionCount": 7
+      "executionCount": 11,
+      "options": {
+        "showSource": true,
+        "noContext": false
+      }
     }
   ]
 }

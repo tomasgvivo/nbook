@@ -1,0 +1,19 @@
+{
+  "name": "@nbook/language-service",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "file-url": "^3.0.0",
+    "typescript": "^3.8.3",
+    "@nbook/typescript-language-server": "^0.4.1"
+  }
+}

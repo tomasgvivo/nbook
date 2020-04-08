@@ -7,8 +7,6 @@ const processTopLevelAwait = require('./processTopLevelAwait');
 const Result = require('./Result');
 const Secrets = require('./Secrets');
 
-let cachedContexts = new Map();
-
 const SkipSymbol = Symbol('skip');
 const CancelSymbol = Symbol('cancel');
 const isSecret = Symbol('isSecret');
@@ -48,6 +46,8 @@ const isCyclic = obj => {
 
     return detect(obj);
 }
+
+let cachedContexts = new Map();
 
 class Runtime extends EventEmitter {
 
@@ -159,14 +159,14 @@ class Runtime extends EventEmitter {
                 this.stratergy = stratergy;
             },
             setContext(_context) {
+                context = _context;
+            },
+            getContext() {
                 try {
-                    context = clone(_context);
+                    return clone(context);
                 } catch {
                     throw new Error('Unable to clone context.');
                 }
-            },
-            getContext() {
-                return context;
             },
             setResults(results) {
                 this.results = results;
@@ -193,6 +193,7 @@ class Runtime extends EventEmitter {
         const count = this.book.blocks.length;
 
         let rollingContext = this.baseContext;
+        let ignoreCache = false;
         let failed = false;
         let canceled = false;
         let hash = '';
@@ -208,10 +209,14 @@ class Runtime extends EventEmitter {
                 createContext(rollingContext);
 
                 hash = this.hashBlock(block, hash);
-                this.emit('progress', { value: progress, index: index, message: `running block ${index} (${block.id})` });
+                this.emit('progress', { value: progress, index: index, hash, hasCache: this.cachedContexts.has(hash), message: `running block ${index} (${block.id})` });
+
+                if(block.options.noCache && !block.options.noContext) {
+                    ignoreCache = true;
+                }
 
                 if (!failed && !canceled) {
-                    if (this.cachedContexts.has(hash) && index < targetIndex) {
+                    if (this.cachedContexts.has(hash) && index < targetIndex && !ignoreCache) {
                         // Use cache if necessary
                         output.setStratergy('cache');
                         output.setContext(this.cachedContexts.get(hash));
@@ -220,12 +225,13 @@ class Runtime extends EventEmitter {
                     } else if (index <= targetIndex) {
                         output.increseExecutionCount();
                         output.startTimer();
-                        await this.runBlock(block, rollingContext, output);
+                        const context = block.options.noContext ? createContext(this.baseContext) : rollingContext;
+                        await this.runBlock(block, context, output);
                         output.stopTimer();
                     }
 
                     if (output.getContext()) {
-                        rollingContext = output.getContext();
+                        rollingContext = block.options.noContext ? rollingContext : output.getContext();
                         contexts.set(hash, output.getContext());
                     }
                 }
@@ -233,7 +239,7 @@ class Runtime extends EventEmitter {
                 output.setError(error);
             }
 
-            if (output.error) {
+            if (output.error && !block.options.canFail) {
                 failed = true;
             }
 
@@ -245,7 +251,7 @@ class Runtime extends EventEmitter {
             this.emit('output', { index, output });
 
             progress = Math.round(((index + 1) / this.book.blocks.length) * 100);
-            this.emit('progress', { value: progress, index, message: `output block ${index} (${block.id})` });
+            this.emit('progress', { value: progress, index, hash, message: `output block ${index} (${block.id})` });
         }
 
         this.cachedContexts.clear();
@@ -307,11 +313,11 @@ class Runtime extends EventEmitter {
     }
 
     get baseContext() {
-        return {
-            install: require('./install'),
-            require: require('./require'),
-            Secrets: Secrets,
-            Result: Result,
+        return clone({
+            install: Object.freeze(require('./install')),
+            require: Object.freeze(require('./require')),
+            Secrets: Object.freeze(Secrets),
+            Result: Object.freeze(Result),
             Runtime: {
                 skip() {
                     throw SkipSymbol;
@@ -320,13 +326,14 @@ class Runtime extends EventEmitter {
                     throw CancelSymbol;
                 }
             }
-        };
+        });
     }
 
     hashBlock(block, parentBlockHash) {
         const hash = createHash('sha256');
         hash.update(parentBlockHash);
         hash.update(block.script.trim());
+        hash.update(block.options.noContext ? 'x' : '');
         return hash.digest('hex');
     }
 

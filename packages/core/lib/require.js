@@ -1,5 +1,8 @@
 const Path = require('path');
-const paths = [ Path.join(process.cwd(), 'lib', 'node_modules') ];
+const paths = [
+    process.cwd(),
+    Path.join(process.cwd(), 'lib', 'node_modules')
+];
 
 module.exports = request => {
     const path = require.resolve(request, { paths });

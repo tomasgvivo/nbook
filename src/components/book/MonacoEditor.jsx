@@ -18,7 +18,7 @@ class MonacoEditor extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { value, language, theme, height, options, width } = this.props;
+    const { value, language, theme, height, options, width, readOnly } = this.props;
 
     const { editor } = this;
     const model = editor.getModel();
@@ -43,6 +43,9 @@ class MonacoEditor extends React.Component {
     }
     if (prevProps.theme !== theme) {
       monaco.editor.setTheme(theme);
+    }
+    if (prevProps.readOnly !== readOnly) {
+      editor.updateOptions({ readOnly });
     }
     if (editor && (width !== prevProps.width || height !== prevProps.height)) {
       editor.layout();
@@ -75,7 +78,7 @@ class MonacoEditor extends React.Component {
 
   initMonaco() {
     const value = this.props.value != null ? this.props.value : this.props.defaultValue;
-    const { language, theme, options, overrideServices } = this.props;
+    const { language, theme, options, overrideServices, readOnly, createModel } = this.props;
     if (this.containerElement) {
       // Before initializing monaco editor
       Object.assign(options, this.editorWillMount());
@@ -84,8 +87,10 @@ class MonacoEditor extends React.Component {
         {
           value,
           language,
+          readOnly,
           ...options,
-          ...(theme ? { theme } : {})
+          ...(theme ? { theme } : {}),
+          model: createModel ? createModel(monaco.editor.createModel) : undefined
         },
         overrideServices
       );
@@ -140,7 +145,8 @@ MonacoEditor.propTypes = {
   overrideServices: PropTypes.object,
   editorDidMount: PropTypes.func,
   editorWillMount: PropTypes.func,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  createModel: PropTypes.func
 };
 
 MonacoEditor.defaultProps = {

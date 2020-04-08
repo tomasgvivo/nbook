@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle, faStopwatch, faExclamationCircle, faAngleDoubleRight, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import isEqual from 'lodash.isequal';
+import Action from './Action';
 import prettyMs from 'pretty-ms';
-
+import isEqual from 'lodash.isequal';
 import Result from './Result';
 import Editor from './Editor';
 
@@ -25,8 +25,15 @@ export default class Block extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      !isEqual(this.props.block, nextProps.block) ||
+      this.props.isCodeHidden !== nextProps.isCodeHidden
+    );
+}
+
   renderEditor() {
-    const { block, index, actions } = this.props;
+    const { block, index, actions, isCodeHidden } = this.props;
     const status = this.getStatus();
 
     const statusIcon = {
@@ -37,50 +44,69 @@ export default class Block extends Component {
       idle: faCircle
     }
 
-    return (
-      <div className={`editor ${block.error ? 'has-error' : ''}`}>
-        <div className="sidebar">
-          <div className="status">
-            <FontAwesomeIcon icon={statusIcon[status]} className={`status-${status}`} />
-          </div>
-          <div className="run" onClick={() => actions.run({ targetIndex: index })}>
-            <FontAwesomeIcon icon={faPlay} />
-          </div>
-          <div className="add" onClick={() => actions.createBlock({ index: index + 1 })}>
-            <FontAwesomeIcon icon={faPlus} />
-          </div>
+    if(isCodeHidden && block.options.showSource) {
+      return (
+        <div className={`editor read-only ${block.error ? 'has-error' : ''}`}>
+          <Editor {...this.props} readOnly={true} />
         </div>
+      );
+    } else if(isCodeHidden) {
+      return null;
+    } else {
+      return (
+        <div className={`editor ${block.error ? 'has-error' : ''}`}>
+          <div className="sidebar">
+            <div className="sidebar-content">
+              <Action className={`status status-${status} disabled`} title={"Block " + status} icon={statusIcon[status]} />
+              <Action className="run" title="Run block" icon={faPlay} onRun={() => actions.run({ targetIndex: index })} />
+              <Action className="add" title="Add block" icon={faPlus} onRun={() => actions.createBlock({ index: index + 1 })} />
+            </div>
+          </div>
 
-        <Editor {...this.props} />
-        <details className="error">
-          <summary>
-            { block.error && block.error.message }
-            <span>{block.error && block.error.line}:{block.error && block.error.column}</span>
-          </summary>
-          <pre>
-            { block.error && block.error.stack }
-          </pre>
-        </details>
-        <div className="execution-details">
-          {
-            typeof block.time === 'number' && (
-              <span className="time">
-                <span className="value">{prettyMs(block.time)}</span> <FontAwesomeIcon icon={faStopwatch} />
-              </span>
-            )
-          }
+          <Editor {...this.props} readOnly={isCodeHidden} />
+
+          <details className="error">
+            <summary>
+              { block.error && block.error.message }
+              <span>{block.error && block.error.line}:{block.error && block.error.column}</span>
+            </summary>
+            <pre>
+              { block.error && block.error.stack }
+            </pre>
+          </details>
+
+          <div className="statusbar">
+            {
+              [
+                { flag: 'isLocked', label: 'locked' },
+                { flag: 'noCache', label: 'cache disabled' },
+                { flag: 'canFail', label: 'allowed to fail' },
+                { flag: 'showSource', label: 'always visible' },
+                { flag: 'noContext', label: 'out of context' }
+              ].filter(({ flag }) => block.options[flag])
+              .map(({ label }, index) => <span key={index}>{ label }</span>)
+              .reduce((acc, item) => acc === null ? <><span>Is:</span> {item}</> : <>{acc}, {item}</>, null)
+            }
+            {
+              typeof block.time === 'number' && (
+                <span className="time">
+                  {prettyMs(block.time)} <FontAwesomeIcon icon={faStopwatch} />
+                </span>
+              )
+            }
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   render() {
-    const { block, index, isCodeHidden, notebookPath } = this.props;
+    const { block, index, notebookPath } = this.props;
     const status = this.getStatus();
 
     return (
       <div className={`block ${status}`} key={index}>
-        { !isCodeHidden && this.renderEditor() }
+        { this.renderEditor() }
         { (block.results || []).map((result, index) => <Result {...result} notebookPath={notebookPath} key={index} />) }
       </div>
     );

@@ -20,6 +20,12 @@ body {
   padding-top: 50px;
 }
 
+.appbar {
+  .action {
+    margin: 0.2em;
+  }
+}
+
 .book-container {
   height: calc(100vh - 145px);
   overflow: auto;
@@ -34,24 +40,53 @@ body {
       padding-left: 3em;
       padding-right: 3em;
 
+      &:hover {
+        .editor .sidebar {
+          .add, .run {
+            height: 1.5em;
+            opacity: 1;
+          }
+        }
+      }
+
       .editor {
-        min-height: 5em;
+        min-height: 4.5em;
         margin: 20px 0px;
 
-        &:hover {
-          .sidebar {
-            .add, .run {
-              height: 1.5em;
-              opacity: 1;
+        &.read-only {
+          min-height: 0px;
+        }
+
+        .statusbar {
+          color: #666666;
+          font-size: 14px;
+
+          .time {
+            float: right;
+            .value {
+              font-family: monospace;
             }
           }
         }
 
         .sidebar {
           position: absolute;
-          left: 1em;
           text-align: center;
           padding-right: 5px;
+          height: 100%;
+          left: 1em;
+
+          .sidebar-content {
+            min-height: 4.5em;
+            position: sticky;
+            top: 1em;
+          }
+
+          .action {
+            display: block;
+            width: 1.5em;
+            height: 1.5em;
+          }
 
           .add, .run {
             transition: height ease 0.2s, opacity ease 0.2s;
@@ -137,19 +172,6 @@ body {
             margin-bottom: 5px;
           }
         }
-
-        .execution-details {
-          font-size: 14px;
-          color: #666666;
-          text-align: right;
-
-          .time {
-            .value {
-            font-family: monospace;
-              display: inline-block;
-            }
-          }
-        }
       }
 
       .result {
@@ -194,6 +216,10 @@ body {
 
       .editor {
         display: none;
+
+        &.read-only {
+          display: block;
+        }
       }
     }
   }

@@ -30,6 +30,7 @@ export default withRouter(class BookController extends Component {
   constructor(props) {
     super(props);
     this.state = this.initialState;
+    this.autoIncrement = 0;
   }
 
   componentDidMount() {
@@ -74,7 +75,7 @@ export default withRouter(class BookController extends Component {
       });
     });
 
-    this.socket.on('book:update', ({ sessionId, saved, action, ...data }) => {
+    this.socket.on('update', ({ sessionId, saved, action, ...data }) => {
       if(sessionId !== this.state.sessionId) {
         return;
       }
@@ -103,6 +104,26 @@ export default withRouter(class BookController extends Component {
         this.setState({
           book: { ...this.state.book, blocks, saved }
         });
+      } else if(action === 'options') {
+        this.setState({
+          book: {
+            ...this.state.book,
+            saved,
+            blocks: this.state.book.blocks.map((block, index) => {
+              if(index === data.index) {
+                return {
+                  ...block,
+                  options: {
+                    ...block.options,
+                    ...data.options
+                  }
+                }
+              } else {
+                return block;
+              }
+            })
+          }
+        });
       } else {
         this.setState({
           book: { ...this.state.book, saved }
@@ -110,7 +131,7 @@ export default withRouter(class BookController extends Component {
       }
     });
 
-    this.socket.on('book:status', ({ sessionId, status }) => {
+    this.socket.on('status', ({ sessionId, status }) => {
       if(sessionId !== this.state.sessionId) {
         return;
       }
@@ -120,7 +141,7 @@ export default withRouter(class BookController extends Component {
       });
     });
 
-    this.socket.on('book:stats', ({ sessionId, ...current }) => {
+    this.socket.on('stats', ({ sessionId, ...current }) => {
       if(sessionId !== this.state.sessionId) {
         return;
       }
@@ -133,7 +154,7 @@ export default withRouter(class BookController extends Component {
       });
     });
 
-    this.socket.on('book:block:output', ({ sessionId, index: updateIndex, output }) => {
+    this.socket.on('block:output', ({ sessionId, index: updateIndex, output }) => {
       if(sessionId !== this.state.sessionId) {
         return;
       }
@@ -146,7 +167,7 @@ export default withRouter(class BookController extends Component {
       });
     });
 
-    this.socket.on('book:action:block:update:script', ({ sessionId, index: updateIndex, script }) => {
+    this.socket.on('action:block:update:script', ({ sessionId, index: updateIndex, script }) => {
       if(sessionId !== this.state.sessionId) {
         return;
       }
@@ -159,7 +180,7 @@ export default withRouter(class BookController extends Component {
       });
     });
 
-    this.socket.on('book:progress', ({ sessionId, progress, status }) => {
+    this.socket.on('progress', ({ sessionId, progress, status }) => {
       if(sessionId !== this.state.sessionId) {
         return;
       }
@@ -185,6 +206,7 @@ export default withRouter(class BookController extends Component {
       save: 'save',
       saveAs:'save:as',
       run: 'run',
+      updateBlockOptions: 'block:update:options',
       updateBlockScript: 'block:update:script',
       createBlock: 'block:create',
       deleteBlock: 'block:delete',
@@ -193,12 +215,43 @@ export default withRouter(class BookController extends Component {
 
     const actions = {
       hideCode: () => this.setState({ isCodeHidden: true }),
-      showCode: () => this.setState({ isCodeHidden: false })
+      showCode: () => this.setState({ isCodeHidden: false }),
+
+      language: (method, params) => {
+        const id = this.autoIncrement++;
+        this.emit(`action:language:request`, {
+          sessionId: this.state.sessionId,
+          id,
+          request: { method, params }
+        });
+
+        return new Promise((resolve, reject) => {
+          const responseHandler = ({ sessionId, id: responseId, response }) => {
+            if(sessionId !== this.state.sessionId) {
+              return;
+            }
+
+            if(responseId !== id) {
+              return;
+            }
+
+            if(response.error) {
+              reject(response.error);
+            } else {
+              resolve(response.result);
+            }
+  
+            this.socket.off(`language:response`, responseHandler);
+          }
+  
+          this.socket.on(`language:response`, responseHandler);
+        });
+      }
     };
 
     for(let action in actionEventNames) {
       actions[action] = (data = {}) => {
-        this.emit(`book:action:${actionEventNames[action]}`, data);
+        this.emit(`action:${actionEventNames[action]}`, data);
       };
     }
 
@@ -224,7 +277,7 @@ export default withRouter(class BookController extends Component {
   onKeyDown(keyName, event) {
     switch(keyName) {
       case 'ctrl+s': {
-        this.emit(`book:action:save`);
+        this.emit(`action:save`);
       }
     }
 

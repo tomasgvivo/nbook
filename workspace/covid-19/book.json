@@ -1,14 +1,16 @@
 {
   "title": "COVID-19",
   "timeoutMs": 300000,
-  "saved": true,
+  "saved": false,
   "status": "saving",
   "blocks": [
     {
       "id": "b1923b8f-10ee-46ad-94e7-bed1dbe441b6",
       "script": "install(\n  '@nbook/md',\n  '@nbook/plot',\n  '@nbook/table',\n  '@nbook/request',\n  'lodash',\n  'mingo',\n  'papaparse'\n);\n\nvar md = require('@nbook/md');\nvar plot = require('@nbook/plot');\nvar table = require('@nbook/table');\nvar request = require('@nbook/request');\nvar _ = require('lodash');\nvar mingo = require('mingo');\nvar Papa = require('papaparse');\n",
       "results": [],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     },
     {
       "id": "f3a0c88c-73b6-49da-aa57-a711eeb4d56b",
@@ -21,13 +23,17 @@
           }
         }
       ],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     },
     {
       "id": "9badf79a-1887-47c6-ad68-314d36602aad",
       "script": "const baseUrl = 'https://covid.ourworldindata.org/data/ecdc';\n\nvar { data: total_cases } = Papa.parse(request(`${baseUrl}/total_cases.csv`), { header: true });\nvar { data: total_deaths } = Papa.parse(request(`${baseUrl}/total_deaths.csv`), { header: true });\nvar { data: new_cases } = Papa.parse(request(`${baseUrl}/new_cases.csv`), { header: true });\nvar { data: new_deaths } = Papa.parse(request(`${baseUrl}/new_deaths.csv`), { header: true });\n",
       "results": [],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     },
     {
       "id": "6d419f87-bf97-4a2d-a12d-4b02760c9dff",
@@ -7758,7 +7764,9 @@
           }
         }
       ],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     },
     {
       "id": "bebd3060-0511-4ba6-9f10-cfc5491a5720",
@@ -8226,13 +8234,17 @@
           }
         }
       ],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     },
     {
       "id": "cf3221e1-59af-4ad7-9c85-20a3dbfb349d",
       "script": "install('request-promise-native', 'request');\nvar rp = require('request-promise-native');",
       "results": [],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     },
     {
       "id": "c42bb397-84c6-44d4-9c98-9efa57e53182",
@@ -8243,7 +8255,9 @@
           "renderer": "json"
         }
       ],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     },
     {
       "id": "f6b3c373-53b4-474e-9ba3-887a9545b5e8",
@@ -8254,7 +8268,9 @@
           "renderer": "json"
         }
       ],
-      "error": null
+      "error": null,
+      "executionCount": 0,
+      "options": {}
     }
   ]
 }
