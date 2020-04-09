@@ -1,5 +1,5 @@
 # nbook
-### Beautiful notebook for javscript enthusiasts, data analists and more.
+### Beautiful notebook for javscript enthusiasts, data analysts and more.
 
 This project is under active development and it has no stable release yet.
 
