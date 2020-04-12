@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
-import { faCheck, faTimes, faCircle, faPlay, faPlus, faRecycle, faStopwatch, faExclamationCircle, faAngleDoubleRight, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
+import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
+import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
+import { faRecycle } from '@fortawesome/free-solid-svg-icons/faRecycle';
+import { faStopwatch } from '@fortawesome/free-solid-svg-icons/faStopwatch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Action from './Action';
 import prettyMs from 'pretty-ms';
-import isEqual from 'lodash.isequal';
+import Action from './Action';
 import Result from './Result';
 import Editor from './Editor';
+import { withNotebook } from './NotebookService';
 
-export default class Block extends Component {
+export default withNotebook([ 'notebookPath', 'mode', 'runtime', 'createBlock' ], class Block extends Component {
 
   getStatus() {
     const block = this.props.block;
@@ -25,15 +31,8 @@ export default class Block extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      !isEqual(this.props.block, nextProps.block) ||
-      this.props.isCodeHidden !== nextProps.isCodeHidden
-    );
-}
-
   renderEditor() {
-    const { block, index, actions, isCodeHidden } = this.props;
+    const { block, index, runtime, createBlock, mode } = this.props;
     const status = this.getStatus();
 
     const statusIcon = {
@@ -44,13 +43,13 @@ export default class Block extends Component {
       idle: faCircle
     }
 
-    if(isCodeHidden && block.options.showSource) {
+    if(mode !== 'edit' && block.options.showSource) {
       return (
         <div className={`editor read-only ${block.error ? 'has-error' : ''}`}>
           <Editor {...this.props} readOnly={true} />
         </div>
       );
-    } else if(isCodeHidden) {
+    } else if(mode !== 'edit') {
       return null;
     } else {
       return (
@@ -58,12 +57,12 @@ export default class Block extends Component {
           <div className="sidebar">
             <div className="sidebar-content">
               <Action className={`status status-${status} disabled`} title={"Block " + status} icon={statusIcon[status]} />
-              <Action className="run" title="Run block" icon={faPlay} onRun={() => actions.run({ targetIndex: index })} />
-              <Action className="add" title="Add block" icon={faPlus} onRun={() => actions.createBlock({ index: index + 1 })} />
+              <Action className="run" title="Run block" icon={faPlay} onRun={() => runtime.run({ targetIndex: index })} />
+              <Action className="add" title="Add block" icon={faPlus} onRun={() => createBlock({ index: index + 1 })} />
             </div>
           </div>
 
-          <Editor {...this.props} readOnly={isCodeHidden} />
+          <Editor {...this.props} readOnly={mode !== 'edit'} />
 
           <details className="error">
             <summary>
@@ -111,5 +110,4 @@ export default class Block extends Component {
       </div>
     );
   }
-
-}
+});

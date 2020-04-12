@@ -3,8 +3,9 @@ const Workspace = require('./lib/workspace');
 const fileUrl = require('file-url');
 
 module.exports = class LanguageService {
-    constructor(book) {
-        this.book = book;
+    constructor(notebook, path) {
+        this.notebook = notebook;
+        this.path = path;
         this.loaded = false;
         this.loadPromise = new Promise(resolve => {
             this.resolveLoad = resolve;
@@ -13,14 +14,13 @@ module.exports = class LanguageService {
         this.documents = new Map;
     }
 
-    connect({ workspacePath, logPath, debug, logLevel, typesDir }) {
-        this.connection = new Connection({ workspacePath, logPath, debug, logLevel });
-        this.workspace = new Workspace(workspacePath, this.connection);
-        this.path = workspacePath;
+    connect({ logPath, debug, logLevel }) {
+        this.connection = new Connection({ workspacePath: this.path, logPath, debug, logLevel });
+        this.workspace = new Workspace(this.path, this.connection);
         this.blockMapper = new Map;
         return this.connection.sendRequest('initialize', {
-            rootPath: workspacePath,
-            rootUri: fileUrl(workspacePath),
+            rootPath: this.path,
+            rootUri: fileUrl(this.path),
             capabilities: clientCapabilities,
             initializationOptions: {
                 compilerOptionsForInferredProjects: {
@@ -38,15 +38,13 @@ module.exports = class LanguageService {
             trace: 'verbose',
             workspaceFolders: [
                 {
-                    uri: fileUrl(workspacePath),
-                    name: this.book.title
+                    uri: fileUrl(this.path),
+                    name: this.notebook.title
                 }
             ]
         }).then(result => {
             this.serverCapabilities = result.capabilities;
             this.loadBlocks();
-            this.book.on('update', () => this.loadBlocks());
-
             this.loaded = true;
             this.resolveLoad();
         });
@@ -74,7 +72,7 @@ module.exports = class LanguageService {
 
         let mainDocument = null;
         const mainFilePath = 'main.js';
-        const mainContent = this.book.blocks
+        const mainContent = this.notebook.blocks
             .filter(block => !block.options.noContext)
             .reduce((acc, block) => {
                 return [
@@ -97,7 +95,7 @@ module.exports = class LanguageService {
 
         let mainOffset = 0;
 
-        for(let block of this.book.blocks) {
+        for(let block of this.notebook.blocks) {
             let content = block.script;
             let lines = content.split('\n').length;
             let range = [ HEADER_OFFSET, HEADER_OFFSET + lines ];
@@ -130,11 +128,11 @@ module.exports = class LanguageService {
         }
     }
 
-    disconect() {
-
+    close() {
+        this.connection.close();
     }
 
-    async complete(blockId, position, triggerKind = 1) {
+    async complete({ blockId, position, context }) {
         await this.ensureLoaded();
 
         const mappedBlock = this.blockMapper.get(blockId);
@@ -146,9 +144,7 @@ module.exports = class LanguageService {
                 line: position.line + mappedBlock.range[0],
                 character: position.character
             },
-            context: {
-                triggerKind
-            }
+            context
         }) || [];
 
         return result.map(item => {

@@ -110,4 +110,7 @@ module.exports = class Connection {
         return this.autoIncrementalId++;
     }
 
+    close() {
+        this.languageServer.kill();
+    }
 }

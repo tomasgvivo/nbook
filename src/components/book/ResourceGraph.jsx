@@ -40,15 +40,3 @@ module.exports = ({ stats, width, height, maxMemory = 0 }) => (
         </ComposedChart>
     </ResponsiveContainer>
 )
-
-
-/**
-
-arr = [0]
-for(i = 0; i < 12; i++) {
-  arr = arr.concat(arr);
-}
-
-arr.length
-
- */

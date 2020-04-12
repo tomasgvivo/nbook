@@ -5,3 +5,4 @@ cache
 .cache
 workspace/**/package*
 workspace/**/.log
+**/jail

@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import { Container, Paper, Card, CardContent, Typography, Button } from '@material-ui/core';
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFolder, faBook, faFileAlt, faDownload } from '@fortawesome/free-solid-svg-icons';
-import { faNodeJs } from '@fortawesome/free-brands-svg-icons';
+import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
+import { faBook } from '@fortawesome/free-solid-svg-icons/faBook';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt';
+import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload';
+import { faNodeJs } from '@fortawesome/free-brands-svg-icons/faNode';
 import { withRouter } from 'react-router-dom';
 import Path from 'path';
-import FileViewer from 'react-file-viewer';
-import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/mode-json";
-import "ace-builds/src-noconflict/mode-text";
-import "ace-builds/src-noconflict/theme-dracula";
 
 const icons = {
     notebook: faBook,
@@ -93,7 +95,11 @@ export default withRouter(class Explorer extends Component {
 
     renderItem(item) {
         return (
-            <Card style={{ width: 200, margin: 10, cursor: item.access ? 'pointer' : 'default', userSelect: 'none' }} key={item.name} onClick={() => this.navigateToItem(item)}>
+            <Card
+                style={{ display: 'inline-block', width: 200, margin: 10, cursor: item.access ? 'pointer' : 'default', userSelect: 'none' }}
+                key={item.name}
+                onClick={() => item.access && this.navigateToItem(item)}
+            >
                 <CardContent>
                     <Typography style={{ fontSize: 14 }} color="textSecondary" gutterBottom>
                         <FontAwesomeIcon icon={icons[item.type]} /> { item.type }
@@ -124,32 +130,14 @@ export default withRouter(class Explorer extends Component {
             }
         }
 
-        if(mimetype.startsWith('image/')) {
-            viewer = <img src={path} />;
-        } else if(mimetype.startsWith('video/')) {
-            viewer = <video src={path} />;
-        } else if(mimetype.startsWith('audio/')) {
-            viewer = <audio src={path} />;
-        } else if(mimetype === 'application/pdf') {
-            viewer = <FileViewer fileType="pdf" filePath={path} />;
-        } else if(mimetype === 'text/csv') {
-            viewer = <FileViewer fileType="csv" filePath={path} />;
-        } else if(mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            viewer = <FileViewer fileType="xlsx" filePath={path} />;
-        } else if(mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            viewer = <FileViewer fileType="docx" filePath={path} />;
-        } else if(mimetype === 'application/json') {
+        if(mimetype === 'application/json' || mimetype.startsWith('text/')) {
             if(this.state.isFileLoading) {
                 viewer = <div>loading</div>;
             } else if(this.state.file) {
-                viewer = <AceEditor value={ (new TextDecoder("utf-8")).decode(this.state.file) } { ...aceEditorProps } mode="json" />;
+                viewer = <pre children={ (new TextDecoder("utf-8")).decode(this.state.file) } />;
             }
-        } else if(mimetype.startsWith('text/')) {
-            if(this.state.isFileLoading) {
-                viewer = <div>loading</div>;
-            } else if(this.state.file) {
-                viewer = <AceEditor value={ (new TextDecoder("utf-8")).decode(this.state.file) || '' } { ...aceEditorProps } mode="text" />;
-            }
+        } else {
+            viewer = <span>No preview available...</span>
         }
 
         return (
@@ -216,7 +204,7 @@ export default withRouter(class Explorer extends Component {
                             }
                         </div>
                     </div>
-                    <div style={{ display: 'flex', padding: "10px 10px" }}>
+                    <div style={{ padding: "10px 10px" }}>
                         {
                             this.state.result.type !== 'file' && this.state.result.content && this.state.result.content.map(item => this.renderItem(item))
                         }

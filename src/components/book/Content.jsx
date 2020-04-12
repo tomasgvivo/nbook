@@ -1,77 +1,38 @@
-import React, { Component } from 'react';
-import Block from './Block';
-import { Paper } from '@material-ui/core';
-import Minimap from 'react-minimap';
+import React from 'react';
 import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
+import ReactHotkeys from 'react-hot-keys';
+import { withNotebook } from './NotebookService';
+import Minimap from './Minimap';
+import AppBar from './AppBar';
+import Block from './Block';
 
-import './minimap.scss';
-
-const minimap_child = ({ width, height, left, top, node }) => {
-    let className = node.className.split(' ').filter(v => v).map(className => `minimap-node minimap-node-${className}`).join(' ');
-    if(node.parentNode.className.includes('view-line')) {
-        className = 'minimap-node minimap-node-code-line';
-        height = 1;
+const handleHotkeys = ({ save, status }) => (keyName, event) => {
+    if(keyName === 'ctrl+s' && !status.notebook.isSaved) {
+        save();
     }
 
-    const style = { position: 'absolute', width, height, left, top };
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+}
 
-    const props = { className, style };
-
-    if(className.includes('editor') || className.includes('result')) {
-        props.className += ' scrollable';
-        props.onClick = () => node.scrollIntoView({ behavior: "smooth", block: 'center' });
-        props.onMouseEnter = () => node.classList.add('highlight');
-        props.onMouseLeave = () => node.classList.remove('highlight');
-    }
-
-    return <div {...props} />
-};
-
-export default class BookContent extends Component {
-    
-    constructor(props) {
-        super(props);
-        this.state = { minimapHeight: 200 };
-    }
-
-    componentDidMount() {
-      const minimapHeight = this.bookContainer.clientHeight;
-      this.setState({ minimapHeight });
-    }
-  
-    render() {
-        const { focus, blocks, actions, isCodeHidden, notebookPath, onKeyDown } = this.props;
-
-        return (
-            <div class="book-container" ref={bookContainer => { this.bookContainer = bookContainer; }} >
-                <Minimap
-                    selector=".book, .editor, .result, .view-line > span"
-                    childComponent={minimap_child}
-                    height={this.state.minimapHeight}
-                >
+export default withNotebook([ 'notebook.blocks', 'status' ], ({ notebook, save, status }) => !notebook ? null : (
+    <div className="book-container">
+        <ReactHotkeys
+            keyName="ctrl+s"
+            onKeyDown={handleHotkeys({ save, status })}
+        >
+            <AppBar />
+            <div className="book-content">
+                <Minimap>
                     <Container>
                         <Paper className="book">
-                            {
-                                blocks.map(
-                                    (block, index) => (
-                                        <Block
-                                            key={block.id}
-                                            block={block}
-                                            index={index}
-                                            inFocus={focus === index}
-                                            actions={actions}
-                                            isCodeHidden={isCodeHidden}
-                                            notebookPath={notebookPath}
-                                            onKeyDown={onKeyDown}
-                                        />
-                                    )
-                                )
-                            }
+                            { notebook.blocks.map((block, index) => <Block key={block.id} block={block} index={index} />) }
                         </Paper>
                     </Container>
                 </Minimap>
             </div>
-        );
-    }
-
-}
+        </ReactHotkeys>
+    </div>
+));

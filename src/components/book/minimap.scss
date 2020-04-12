@@ -1,56 +1,60 @@
-.minimap {
-    height: calc(100vh - 145px) !important;
-    background-color: rgba(0,0,0,0.05);
-    pointer-events: none;
-    position: fixed;
-    top: 146px;
-    right: 0;
+.minimap-container {
+    height: 100%;
 
-    @media (max-width: 1630px) {
-        display: none;
-    }
-
-    @media print {
-        display: none;
-    }
-
-    .minimap-node {
-        opacity: 0.9;
+    .minimap {
+        height: calc(100vh - 135px) !important;
+        background-color: rgba(0,0,0,0.05);
         pointer-events: none;
-
-        &.scrollable {
-            pointer-events: fill;
+        position: fixed;
+        top: 136px;
+        right: 0;
+    
+        @media (max-width: 1630px) {
+            display: none;
         }
-
-        &.scrollable:hover {
-            cursor: pointer;
-            opacity: 1;
+    
+        @media print {
+            display: none;
         }
-    }
-
-    .minimap-node-book {
-        background-color: white;
-    }
-
-    .minimap-node-editor {
-        background-color: #282a36;
-
-        &.minimap-node-has-error {
-            background-color: #e8b5b5;
-
-            &:hover {
-                background-color: #eaa6a6;
+    
+        .minimap-node {
+            opacity: 0.9;
+            pointer-events: none;
+    
+            &.scrollable {
+                pointer-events: fill;
+            }
+    
+            &.scrollable:hover {
+                cursor: pointer;
+                opacity: 1;
             }
         }
-    }
-
-    .minimap-node-result {
-        background-color: #eeeeee;
-        &.scrollable:hover {
-            background-color: #dddddd;
+    
+        .minimap-node-book {
+            background-color: white;
         }
-    }
-    .minimap-node-code-line {
-        background-color: rgba(255,255,255,0.3);
-    }
+    
+        .minimap-node-editor {
+            background-color: #282a36;
+    
+            &.minimap-node-has-error {
+                background-color: #e8b5b5;
+    
+                &:hover {
+                    background-color: #eaa6a6;
+                }
+            }
+        }
+    
+        .minimap-node-result {
+            background-color: #eeeeee;
+            &.scrollable:hover {
+                background-color: #dddddd;
+            }
+        }
+        .minimap-node-code-line {
+            background-color: rgba(255,255,255,0.3);
+        }
+    }    
 }

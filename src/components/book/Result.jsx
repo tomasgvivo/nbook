@@ -1,13 +1,14 @@
-import React, { Component, Suspense, memo } from 'react';
+import React, { Component, Suspense } from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 import JSONRenderer from './renderers/json';
 import HTMLRenderer from './renderers/html';
 import csstree from 'css-tree';
 import isEqual from 'lodash.isequal';
-const Url = require('url');
+import { v4 as uuid } from 'uuid';
+import Url from 'url';
 
-const { v4: uuid } = require('uuid')
 const cache = new Map();
+
 export default class Result extends Component {
     constructor(props) {
         super(props);
@@ -31,6 +32,17 @@ export default class Result extends Component {
     async fetchRenderer(basePath, url) {
         let externalModule = {};
         const response = await fetch(url);
+
+        if(response.status >= 400) {
+            return {
+                default: () => (
+                    <Alert severity="error">
+                        Couldn't load renderer {url}, got status {response.status}.
+                    </Alert>
+                )
+            };
+        }
+
         const script = await response.text();
 
         {
@@ -111,8 +123,6 @@ export default class Result extends Component {
             </>
         );
 
-        cache.set(url, externalModule);
-
         return externalModule;
     }
 
@@ -137,22 +147,22 @@ export default class Result extends Component {
             const url = `${basePath}/${this.props.renderer.path}`;
 
             if(cache.has(url)) {
-                this.Renderer = React.lazy(async () => cache.get(url));
+                this.Renderer = cache.get(url);
             } else {
                 this.Renderer = React.lazy(() => this.fetchRenderer(basePath, url));
+                cache.set(url, this.Renderer);
             }
         }
     }
 
     render() {
-        console.log('render', 'result')
         const Renderer = this.Renderer || this.getDefaultRenderer();
 
         if(Renderer) {
             return (
                 <div className={ "result " + (this.uuid ? '_' + this.uuid : '')}>
                     <ErrorBoundary>
-                        <Suspense fallback={<div>loading...</div>}>
+                        <Suspense fallback={<div>loading...</div>} >
                             <Renderer value={this.props.value} />
                         </Suspense>
                     </ErrorBoundary>

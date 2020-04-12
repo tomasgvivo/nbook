@@ -2,10 +2,10 @@ const { createContext, runInContext } = require('vm');
 const cloneDeep = require('lodash.clonedeep');
 const cloneDeepWith = require('lodash.clonedeepwith');
 const { createHash } = require('crypto');
-const EventEmitter = require('events');
-const processTopLevelAwait = require('./processTopLevelAwait');
-const Result = require('./Result');
+const Result = require('@nbook/result');
+const JSONRPC = require('../util/JSONRPC');
 const Secrets = require('./Secrets');
+const processTopLevelAwait = require('./utils/processTopLevelAwait');
 
 const SkipSymbol = Symbol('skip');
 const CancelSymbol = Symbol('cancel');
@@ -49,77 +49,12 @@ const isCyclic = obj => {
 
 let cachedContexts = new Map();
 
-class Runtime extends EventEmitter {
+class Runtime extends JSONRPC {
 
     static main() {
-        if (process.channel) {
-            this.startIPC();
-        } else {
-            this.startSTDIN();
-        }
-    }
-
-    static startIPC() {
-        let isRunning = false;
-
-        process.on('message', async payload => {
-            const { action, ...data } = JSON.parse(payload);
-
-            if (action === 'run') {
-                if (isRunning) {
-                    throw new Error('already running');
-                }
-
-                isRunning = true;
-
-                const runtime = new Runtime(data.book);
-
-                runtime.on('output', ({ index, output }) => {
-                    process.send(JSON.stringify({ action: 'block_output', index, ...output }));
-                });
-
-                runtime.on('progress', data => {
-                    process.send(JSON.stringify({ action: 'progress', ...data }));
-                });
-
-                runtime.on('finalized', () => {
-                    process.send(JSON.stringify({ action: 'finalized' }));
-                    isRunning = false;
-                });
-
-                runtime.run(data.targetIndex);
-            } else if (action === 'gc') {
-                global.gc();
-            }
-        });
-
-        process.on('disconnect', () => {
-            process.exit();
-        });
-    }
-
-    static startSTDIN() {
-        let data = "";
-
-        process.stdin.setEncoding('utf8');
-
-        process.stdin.on('data', chunk => {
-            data += chunk;
-        });
-
-        process.stdin.on('end', () => {
-            const book = JSON.parse(data);
-            const runtime = new Runtime(book);
-
-            runtime.on('finalized', result => {
-                console.log(JSON.stringify(result, null, 4));
-            });
-
-            runtime.run().catch(error => {
-                console.error(error);
-                process.exit(1);
-            });
-        });
+        const runtime = Runtime.fromProcess(process);
+        runtime.handle('run', ({ notebook, targetIndex }) => runtime.run(notebook, targetIndex));
+        runtime.sendNotification('ready');
     }
 
     get cachedContexts() {
@@ -128,11 +63,6 @@ class Runtime extends EventEmitter {
 
     set cachedContexts(cctx) {
         cachedContexts = cctx;
-    }
-
-    constructor(book) {
-        super();
-        this.book = { blocks: [], ...book };
     }
 
     createOutput(block) {
@@ -187,10 +117,13 @@ class Runtime extends EventEmitter {
         };
     }
 
-    async run(targetIndex = this.book.blocks.length) {
+    async run(notebook, targetIndex) {
+        const blocks = notebook.blocks;
+        targetIndex = typeof targetIndex === "number" ? targetIndex : blocks.length;
+
         const contexts = new Map();
         const outputs = [];
-        const count = this.book.blocks.length;
+        const count = blocks.length;
 
         let rollingContext = this.baseContext;
         let ignoreCache = false;
@@ -202,7 +135,7 @@ class Runtime extends EventEmitter {
         this.emit('progress', { value: progress, index: null, message: 'running' });
 
         for (let index = 0; index < count; index++) {
-            const block = this.book.blocks[index];
+            const block = blocks[index];
             const output = this.createOutput(block);
 
             try {
@@ -250,7 +183,7 @@ class Runtime extends EventEmitter {
             outputs.push(output);
             this.emit('output', { index, output });
 
-            progress = Math.round(((index + 1) / this.book.blocks.length) * 100);
+            progress = Math.round(((index + 1) / blocks.length) * 100);
             this.emit('progress', { value: progress, index, hash, message: `output block ${index} (${block.id})` });
         }
 
@@ -258,7 +191,6 @@ class Runtime extends EventEmitter {
         this.cachedContexts = contexts;
 
         this.emit('progress', { value: progress, index: null, message: `done` });
-        this.emit('finalized', outputs);
         return outputs;
     }
 

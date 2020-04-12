@@ -8,7 +8,7 @@
 
 body {
   background: #f1f1f1;
-  padding-top: 145px;
+  padding-top: 135px;
 }
 
 .ace_editor {
@@ -26,8 +26,12 @@ body {
   }
 }
 
-.book-container {
-  height: calc(100vh - 145px);
+.action {
+  outline: none;
+}
+
+.book-content {
+  height: calc(100vh - 135px);
   overflow: auto;
 
   .book {
@@ -203,11 +207,15 @@ body {
     width: 210mm;
   }
 
+  .MuiTooltip-popper{
+    display: none;
+  }
+
   .MuiContainer-root {
     padding: 0px !important;
   }
 
-  .book-container {
+  .book-content {
     height: auto;
   
     .book {
