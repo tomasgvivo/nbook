@@ -3,7 +3,7 @@ const path = require('path');
 const npm_bin = path.resolve(require.resolve('npm'), '../../bin/npm-cli.js');
 const contextRequire = require('./require');
 const semver = require('semver');
-const parsePackageName = require('./parsePackageName');
+const parsePackageName = require('./utils/parsePackageName');
 
 class InstallError {
     constructor(output) {

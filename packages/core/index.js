@@ -1,7 +1,11 @@
 const Path = require('path');
-const Result = require('./lib/Result');
 
 module.exports = {
     runtimePath: Path.join(__dirname, 'lib/Runtime.js'),
-    Result
+    RuntimeService: require('./lib/runtime'),
+    JSONRPC: require('./lib/util/JSONRPC'),
+    Block: require('./lib/Block'),
+    Notebook: require('./lib/Notebook'),
+    Result: require('@nbook/result'),
+    RuntimeTimeoutError: require('./lib/runtime/errors/RuntimeTimeoutError')
 };

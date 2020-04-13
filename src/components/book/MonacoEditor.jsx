@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import monaco from "../../lib/monaco-editor";
 
 const noop = () => {};
 const processSize = size => {
@@ -81,7 +81,6 @@ class MonacoEditor extends React.Component {
     const { language, theme, options, overrideServices, readOnly, createModel } = this.props;
     if (this.containerElement) {
       // Before initializing monaco editor
-      Object.assign(options, this.editorWillMount());
       this.editor = monaco.editor.create(
         this.containerElement,
         {
@@ -97,12 +96,6 @@ class MonacoEditor extends React.Component {
       // After initializing monaco editor
       this.editorDidMount(this.editor);
     }
-  }
-
-  editorWillMount() {
-    const { editorWillMount } = this.props;
-    const options = editorWillMount(monaco);
-    return options || {};
   }
 
   editorDidMount(editor) {
@@ -144,7 +137,6 @@ MonacoEditor.propTypes = {
   options: PropTypes.object,
   overrideServices: PropTypes.object,
   editorDidMount: PropTypes.func,
-  editorWillMount: PropTypes.func,
   onChange: PropTypes.func,
   createModel: PropTypes.func
 };
@@ -159,7 +151,6 @@ MonacoEditor.defaultProps = {
   options: {},
   overrideServices: {},
   editorDidMount: noop,
-  editorWillMount: noop,
   onChange: noop
 };
 
