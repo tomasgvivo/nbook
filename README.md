@@ -6,6 +6,7 @@ This project is under active development and it has no stable release yet.
 ### TODO
 - General
   - [x] Dockerization
+  - [x] Use json-rpc on top of socket.io instead of only events
   - [ ] Publish on dockerhub
   - [ ] Publish server on npm
   - [ ] Write better readme
@@ -15,7 +16,6 @@ This project is under active development and it has no stable release yet.
   - [ ] Notebook Auto-save
   - [ ] Notebook Auto-backup
   - [ ] Notebook versioning / checkpoints
-  - [ ] Use json-rpc on top of socket.io instead of only events
   - [ ] SSR for notebook renderers
   - [ ] Service worker for cache and handling offline
   - [ ] Add more examples
@@ -38,13 +38,13 @@ This project is under active development and it has no stable release yet.
   - [x] Print button
   - [x] Show timings for blocks
   - [x] Show code suggestions and docs considering context and installed packages
-  - [ ] Stop button
+  - [x] Stop button
+  - [x] Cache renderer assets
   - [ ] Show runtime log
   - [ ] Repl mode
   - [ ] Locked editor mode (lock full view)
   - [ ] Allow user to move blocks (reorder)
   - [ ] Allow user to mark block as disabled (runtime should not run that block)
-  - [ ] Cache renderer assets
 - Notebook runtime
   - [x] Allow top-level await on blocks
   - [x] Block level cache
@@ -66,7 +66,7 @@ This project is under active development and it has no stable release yet.
   - [x] @nbook/plot (chart.js data renderer)
   - [x] @nbook/table (data table renderer)
   - [x] @nbook/request (synchronic requests for nbook)
-  - [ ] @nbook/result (move from @nbook/core)
+  - [x] @nbook/result (move from @nbook/core)
   - [ ] @nbook/dev (toolkit for nbook package development)
   - [ ] @nbook/p5 (processing.js renderer)
 - Examples
