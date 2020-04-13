@@ -143,7 +143,7 @@ export default class Result extends Component {
                 }
             }
         } else if(typeof this.props.renderer === 'object' && this.props.renderer.path) {
-            const basePath = `/workspace/${this.props.notebookPath}`;
+            const basePath = `${process.env.NBOOK_PUBLIC_URL}/workspace/${this.props.notebookPath}/lib`;
             const url = `${basePath}/${this.props.renderer.path}`;
 
             if(cache.has(url)) {
