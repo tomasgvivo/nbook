@@ -67,7 +67,7 @@ export default class NotebookService extends Component {
   }
 
   async start(path) {
-    this.socket = new WebSocket(this.props.url || `ws://${document.location.host}`);
+    this.socket = new WebSocket(this.props.url || `ws://${document.location.host}${document.location.pathname}`);
     this.jsonrpc = new JSONRPC(message => this.socket.send(JSON.stringify(message)));
     this.socket.addEventListener('message', event => this.jsonrpc.handleMessage(JSON.parse(event.data)));
 

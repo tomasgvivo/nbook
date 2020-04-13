@@ -195,7 +195,7 @@ export default withRouter(class Explorer extends Component {
                             }
                             {
                                 this.state.result.type === 'file' && (
-                                    <Button href={Path.join('/api/explore', this.state.result.path) + '?open'} download={this.state.result.name}>
+                                    <Button href={Path.join(`${process.env.NBOOK_PUBLIC_URL}/api/explore`, this.state.result.path) + '?open'} download={this.state.result.name}>
                                         <FontAwesomeIcon icon={faDownload} />
                                         &nbsp;
                                         Download
