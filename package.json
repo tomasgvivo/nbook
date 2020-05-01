@@ -10,6 +10,19 @@
     "start": "node ./lib/server",
     "build-monaco-dependencies": "scripts/build-monaco-dependencies.sh"
   },
+  "bin": {
+    "nbook": "./bin/nbook"
+  },
+  "files": [
+    "bin",
+    "build",
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "oclif": {
+    "commands": "./lib/commands"
+  },
   "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -45,8 +58,10 @@
   "dependencies": {
     "@nbook/core": "^0.1.12",
     "@nbook/language-service": "^0.1.2",
+    "@oclif/command": "^1.5.20",
     "compression": "^1.7.4",
     "express": "^4.17.1",
+    "globby": "^11.0.0",
     "helmet": "^3.22.0",
     "isbinaryfile": "^4.0.5",
     "mime-types": "^2.1.26",
