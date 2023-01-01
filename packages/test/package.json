@@ -9,7 +9,7 @@
   "author": "Tomás Gonzalez Vivo <tomasgvivo@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "parcel": "^1.12.4",
+    "parcel": "^2.8.2",
     "react": "^16.13.1",
     "react-katex": "^2.0.2"
   }
