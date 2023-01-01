@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "lodash.isequal": "^4.5.0",
-    "parcel": "^1.12.4",
+    "parcel": "^2.8.2",
     "react": "^16.13.1",
     "react-chartjs-2": "^2.9.0"
   }
